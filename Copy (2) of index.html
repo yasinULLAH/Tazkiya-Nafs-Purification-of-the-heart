@@ -1,0 +1,4438 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PureHeart Path - Tazkiyah an-Nafs Journey</title>
+    <style>
+        :root {
+            --primary: #3a7bd5;
+            --primary-light: #6faae1;
+            --secondary: #00d084;
+            --dark: #2d3748;
+            --light: #f7fafc;
+            --danger: #e53e3e;
+            --warning: #f6ad55;
+            --success: #48bb78;
+            --gray: #a0aec0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #f0f5ff;
+            color: var(--dark);
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            grid-template-rows: auto 1fr;
+            grid-template-areas:
+                "sidebar header"
+                "sidebar main";
+        }
+        
+        header {
+            grid-area: header;
+            padding: 1rem 2rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sidebar {
+            grid-area: sidebar;
+            background: white;
+            border-right: 1px solid rgba(0,0,0,0.1);
+            padding: 1.5rem 0;
+            height: 100vh;
+            position: fixed;
+            width: 260px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-title {
+            padding: 0 1.5rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .app-title h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .app-title p {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+        
+        .nav-menu {
+            list-style: none;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--dark);
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(58, 123, 213, 0.1);
+            color: var(--primary);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .nav-icon {
+            font-size: 1.25rem;
+        }
+        
+        main {
+            grid-area: main;
+            padding: 2rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 74px);
+        }
+        
+        .dashboard-container {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-light);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(58, 123, 213, 0.1);
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .btn-icon {
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .progress-container {
+            margin: 1rem 0;
+            background: #edf2f7;
+            border-radius: 8px;
+            height: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            transition: width 0.5s;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+        
+        .habit-list, .goal-list {
+            margin-top: 1rem;
+        }
+        
+        .habit-item, .goal-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #edf2f7;
+        }
+        
+        .habit-item:last-child, .goal-item:last-child {
+            border-bottom: none;
+        }
+        
+        .habit-check {
+            accent-color: var(--secondary);
+            width: 18px;
+            height: 18px;
+        }
+        
+        .habit-info, .goal-info {
+            flex-grow: 1;
+            padding: 0 1rem;
+        }
+        
+        .habit-name, .goal-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .habit-desc, .goal-desc {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+        
+        .streak {
+            background: #edf2f7;
+            color: var(--primary);
+            border-radius: 12px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.open {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            animation: modalFadeIn 0.3s;
+        }
+        
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #edf2f7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #edf2f7;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(58, 123, 213, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .radio-group, .checkbox-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-top: 1rem;
+        }
+        
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            margin-bottom: 0.5rem;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .day-empty {
+            background: transparent;
+        }
+        
+        .day-missed {
+            background: #feebc8;
+        }
+        
+        .day-completed {
+            background: #c6f6d5;
+        }
+        
+        .day-current {
+            border: 2px solid var(--primary);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .badge-primary {
+            background: rgba(58, 123, 213, 0.1);
+            color: var(--primary);
+        }
+        
+        .badge-secondary {
+            background: rgba(0, 208, 132, 0.1);
+            color: var(--secondary);
+        }
+        
+        .tab-container {
+            margin: 1rem 0;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #edf2f7;
+            margin-bottom: 1rem;
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .quote-card {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #3a7bd5, #00d084);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quote-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .quote-source {
+            font-weight: 500;
+            text-align: right;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .quote-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
+            background-size: 20px 20px;
+        }
+        
+        .chart-container {
+            margin-top: 1rem;
+            height: 200px;
+        }
+        
+        .journal-entry {
+            padding: 1rem;
+            background: rgba(58, 123, 213, 0.05);
+            border-left: 3px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1rem;
+        }
+        
+        .journal-date {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .journal-content {
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "header"
+                    "main";
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -260px;
+                z-index: 99;
+                transition: left 0.3s;
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .menu-toggle {
+                display: flex;
+                cursor: pointer;
+                font-size: 1.5rem;
+            }
+            
+            main {
+                max-height: calc(100vh - 60px);
+            }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+<div class="app-title">
+<h1>PureHeart Path</h1>
+<p>Tazkiyah an-Nafs Journey</p>
+</div>
+
+        <ul class="nav-menu">
+            <li class="nav-item active" data-page="dashboard">
+                <i class="nav-icon">📊</i> Dashboard
+            </li>
+            <li class="nav-item" data-page="areas">
+                <i class="nav-icon">🎯</i> Focus Areas
+            </li>
+            <li class="nav-item" data-page="habits">
+                <i class="nav-icon">⏰</i> Daily Habits
+            </li>
+            <li class="nav-item" data-page="goals">
+                <i class="nav-icon">🚀</i> Goals
+            </li>
+            <li class="nav-item" data-page="reflections">
+                <i class="nav-icon">📝</i> Reflections
+            </li>
+            <li class="nav-item" data-page="inspirations">
+                <i class="nav-icon">✨</i> Inspirations
+            </li>
+            <li class="nav-item" data-page="analytics">
+                <i class="nav-icon">📈</i> Analytics
+            </li>
+            <li class="nav-item" data-page="settings">
+                <i class="nav-icon">⚙️</i> Settings
+            </li>
+        </ul>
+    </aside>
+    
+    <header>
+        <button class="menu-toggle">☰</button>
+        <div id="date-display"></div>
+        <button id="new-area-btn" class="btn btn-primary">
+            <i>➕</i> New Focus Area
+        </button>
+    </header>
+    
+    <main>
+        <!-- Dashboard Page -->
+        <section id="dashboard" class="page">
+            <div class="quote-card">
+                <div class="quote-pattern"></div>
+                <p class="quote-text">"Whoever purifies himself will prosper."</p>
+                <p class="quote-source">Quran 87:14</p>
+            </div>
+            
+            <h2>Your Journey Today</h2>
+            
+            <div class="dashboard-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Daily Progress</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-sm btn-outline">Update</button>
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <div id="daily-progress" class="progress-bar" style="width: 65%"></div>
+                    </div>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value" id="habits-completed">4</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="habits-total">6</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="streak-count">12</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Today's Habits</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-sm btn-outline" id="add-habit-btn">Add</button>
+                        </div>
+                    </div>
+                    <div class="habit-list" id="today-habits">
+                        <!-- Habits will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Focus Areas</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-sm btn-outline" id="view-areas-btn">View All</button>
+                        </div>
+                    </div>
+                    <div id="focus-areas-list">
+                        <!-- Areas will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Daily Reflection</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-sm btn-outline" id="add-reflection-btn">Write</button>
+                        </div>
+                    </div>
+                    <div id="today-reflection">
+                        <p class="journal-content">Today I struggled with patience during my morning commute, but I remembered to recite "Astaghfirullah" and took deep breaths. I'll continue working on this tomorrow.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Areas Page -->
+        <section id="areas" class="page hidden">
+            <h2>Focus Areas</h2>
+            <p>Define the aspects of your character you wish to improve through Tazkiyah</p>
+            
+            <button class="btn btn-primary" id="create-area-btn" style="margin: 1rem 0;">
+                <i>➕</i> Create New Focus Area
+            </button>
+            
+            <div id="areas-container" class="dashboard-container">
+                <!-- Areas will be loaded here -->
+            </div>
+        </section>
+        
+        <!-- Habits Page -->
+        <section id="habits" class="page hidden">
+            <h2>Daily Habits</h2>
+            <p>Track your consistent actions towards self-purification</p>
+            
+            <button class="btn btn-primary" id="create-habit-btn" style="margin: 1rem 0;">
+                <i>➕</i> Create New Habit
+            </button>
+            
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="active-habits">Active Habits</div>
+                    <div class="tab" data-tab="completed-habits">Completed</div>
+                    <div class="tab" data-tab="all-habits">All Habits</div>
+                </div>
+                
+                <div id="active-habits" class="tab-content active">
+                    <div id="active-habits-list" class="dashboard-container">
+                        <!-- Active habits will be loaded here -->
+                    </div>
+                </div>
+                
+                <div id="completed-habits" class="tab-content">
+                    <div id="completed-habits-list" class="dashboard-container">
+                        <!-- Completed habits will be loaded here -->
+                    </div>
+                </div>
+                
+                <div id="all-habits" class="tab-content">
+                    <div id="all-habits-list" class="dashboard-container">
+                        <!-- All habits will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Goals Page -->
+        <section id="goals" class="page hidden">
+            <h2>Growth Goals</h2>
+            <p>Set and track specific milestones in your Tazkiyah journey</p>
+            
+            <button class="btn btn-primary" id="create-goal-btn" style="margin: 1rem 0;">
+                <i>➕</i> Create New Goal
+            </button>
+            
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="current-goals">Current Goals</div>
+                    <div class="tab" data-tab="achieved-goals">Achieved</div>
+                    <div class="tab" data-tab="all-goals">All Goals</div>
+                </div>
+                
+                <div id="current-goals" class="tab-content active">
+                    <div id="current-goals-list" class="dashboard-container">
+                        <!-- Current goals will be loaded here -->
+                    </div>
+                </div>
+                
+                <div id="achieved-goals" class="tab-content">
+                    <div id="achieved-goals-list" class="dashboard-container">
+                        <!-- Achieved goals will be loaded here -->
+                    </div>
+                </div>
+                
+                <div id="all-goals" class="tab-content">
+                    <div id="all-goals-list" class="dashboard-container">
+                        <!-- All goals will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Reflections Page -->
+        <section id="reflections" class="page hidden">
+            <h2>Reflections Journal</h2>
+            <p>Document your inner journey and spiritual growth</p>
+            
+            <button class="btn btn-primary" id="create-reflection-btn" style="margin: 1rem 0;">
+                <i>✏️</i> New Journal Entry
+            </button>
+            
+            <div id="reflections-container">
+                <!-- Reflections will be loaded here -->
+            </div>
+        </section>
+        
+        <!-- Inspirations Page -->
+        <section id="inspirations" class="page hidden">
+            <h2>Inspirations</h2>
+            <p>Ayahs and Hadith to guide and motivate your journey</p>
+            
+            <button class="btn btn-primary" id="add-inspiration-btn" style="margin: 1rem 0;">
+                <i>➕</i> Add New Inspiration
+            </button>
+            
+            <div id="inspirations-container" class="dashboard-container">
+                <!-- Inspirations will be loaded here -->
+            </div>
+        </section>
+        
+        <!-- Analytics Page -->
+        <section id="analytics" class="page hidden">
+            <h2>Progress Analytics</h2>
+            <p>Visualize your journey of spiritual growth</p>
+            
+            <div class="dashboard-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Habit Consistency</h3>
+                    </div>
+                    <div class="chart-container" id="habit-chart">
+                        <!-- Chart will be rendered here -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Goal Progress</h3>
+                    </div>
+                    <div class="chart-container" id="goal-chart">
+                        <!-- Chart will be rendered here -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Focus Area Growth</h3>
+                    </div>
+                    <div class="chart-container" id="area-chart">
+                        <!-- Chart will be rendered here -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Monthly Overview</h3>
+                    </div>
+                    <div class="chart-container" id="overview-chart">
+                        <!-- Chart will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Settings Page -->
+        <section id="settings" class="page hidden">
+            <h2>Settings</h2>
+            
+            <div class="card" style="margin-top: 1rem;">
+                <div class="card-header">
+                    <h3 class="card-title">Application Settings</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Theme</label>
+                    <select class="form-control" id="theme-selector">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="serenity">Serenity</option>
+                        <option value="growth">Growth</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Notification Preferences</label>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" checked> Daily Reminders
+                        </label>
+                        <label>
+                            <input type="checkbox" checked> Achievement Alerts
+                        </label>
+                        <label>
+                            <input type="checkbox"> Weekly Summary
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Data Management</label>
+                    <button class="btn btn-outline" id="export-data-btn">Export Data</button>
+                    <button class="btn btn-outline" id="import-data-btn" style="margin-left: 0.5rem;">Import Data</button>
+                    <button class="btn btn-outline btn-danger" id="clear-data-btn" style="margin-left: 0.5rem;">Clear All Data</button>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 1rem;">
+                <div class="card-header">
+                    <h3 class="card-title">Customize Virtues & Vices</h3>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Virtues to Cultivate</label>
+                    <div id="virtues-list">
+                        <!-- Virtues will be loaded here -->
+                    </div>
+                    <button class="btn btn-sm btn-outline" id="add-virtue-btn" style="margin-top: 0.5rem;">Add Virtue</button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Vices to Overcome</label>
+                    <div id="vices-list">
+                        <!-- Vices will be loaded here -->
+                    </div>
+                    <button class="btn btn-sm btn-outline" id="add-vice-btn" style="margin-top: 0.5rem;">Add Vice</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Modals -->
+    
+    <!-- New Area Modal -->
+    <div id="area-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="area-modal-title">Create New Focus Area</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="area-form">
+                    <div class="form-group">
+                        <label class="form-label" for="area-name">Area Name</label>
+                        <input type="text" id="area-name" class="form-control" placeholder="e.g., Controlling Anger" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="area-description">Description</label>
+                        <textarea id="area-description" class="form-control" placeholder="Describe this area of focus and why it's important for your spiritual growth"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="area-category" value="virtue" checked> Virtue to Cultivate
+                            </label>
+                            <label>
+                                <input type="radio" name="area-category" value="vice"> Vice to Overcome
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="area-inspiration">Related Inspiration (Optional)</label>
+                        <textarea id="area-inspiration" class="form-control" placeholder="Add a Quranic ayah or hadith related to this area"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="area-priority">Priority</label>
+                        <select id="area-priority" class="form-control">
+                            <option value="high">High</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close-btn">Cancel</button>
+                <button class="btn btn-primary" id="save-area-btn">Save Focus Area</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Habit Modal -->
+    <div id="habit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="habit-modal-title">Create New Habit</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="habit-form">
+                    <div class="form-group">
+                        <label class="form-label" for="habit-name">Habit Name</label>
+                        <input type="text" id="habit-name" class="form-control" placeholder="e.g., Morning Adhkar" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="habit-description">Description</label>
+                        <textarea id="habit-description" class="form-control" placeholder="Describe this habit and how it helps your spiritual growth"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="habit-area">Related Focus Area</label>
+                        <select id="habit-area" class="form-control">
+                            <option value="">Select a focus area</option>
+                            <!-- Focus areas will be loaded here -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Frequency</label>
+                        <div class="checkbox-group" id="habit-frequency">
+                            <label><input type="checkbox" value="0" checked> Sun</label>
+                            <label><input type="checkbox" value="1" checked> Mon</label>
+                            <label><input type="checkbox" value="2" checked> Tue</label>
+                            <label><input type="checkbox" value="3" checked> Wed</label>
+                            <label><input type="checkbox" value="4" checked> Thu</label>
+                            <label><input type="checkbox" value="5" checked> Fri</label>
+                            <label><input type="checkbox" value="6" checked> Sat</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="habit-reminder">Reminder Time (Optional)</label>
+                        <input type="time" id="habit-reminder" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close-btn">Cancel</button>
+                <button class="btn btn-primary" id="save-habit-btn">Save Habit</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Goal Modal -->
+    <div id="goal-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="goal-modal-title">Create New Goal</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="goal-form">
+                    <div class="form-group">
+                        <label class="form-label" for="goal-name">Goal Name</label>
+                        <input type="text" id="goal-name" class="form-control" placeholder="e.g., Complete Quran recitation" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="goal-description">Description</label>
+                        <textarea id="goal-description" class="form-control" placeholder="Describe this goal and why it matters to your spiritual growth"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="goal-area">Related Focus Area</label>
+                        <select id="goal-area" class="form-control">
+                            <option value="">Select a focus area</option>
+                            <!-- Focus areas will be loaded here -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="goal-target">Target Date</label>
+                        <input type="date" id="goal-target" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="goal-measure">Measure of Success</label>
+                        <textarea id="goal-measure" class="form-control" placeholder="How will you know when you've achieved this goal?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="goal-milestones">Milestones (Optional)</label>
+                        <textarea id="goal-milestones" class="form-control" placeholder="List key milestones along the way to this goal"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close-btn">Cancel</button>
+                <button class="btn btn-primary" id="save-goal-btn">Save Goal</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Reflection Modal -->
+    <div id="reflection-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="reflection-modal-title">New Journal Entry</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="reflection-form">
+                    <div class="form-group">
+                        <label class="form-label" for="reflection-date">Date</label>
+                        <input type="date" id="reflection-date" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="reflection-content">Reflection</label>
+                        <textarea id="reflection-content" class="form-control" rows="8" placeholder="Share your thoughts, feelings, challenges, and victories in your spiritual journey today..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="reflection-mood">Overall Spiritual State</label>
+                        <select id="reflection-mood" class="form-control">
+                            <option value="elevated">Elevated & Connected</option>
+                            <option value="balanced" selected>Balanced & Present</option>
+                            <option value="challenged">Challenged but Growing</option>
+                            <option value="struggling">Struggling</option>
+                            <option value="disconnected">Disconnected</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="reflection-areas">Related Focus Areas</label>
+                        <div id="reflection-areas" class="checkbox-group">
+                            <!-- Focus areas will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="reflection-insights">Key Insights</label>
+                        <textarea id="reflection-insights" class="form-control" placeholder="What did you learn about yourself today?"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close-btn">Cancel</button>
+                <button class="btn btn-primary" id="save-reflection-btn">Save Entry</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Inspiration Modal -->
+    <div id="inspiration-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="inspiration-modal-title">Add New Inspiration</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="inspiration-form">
+                    <div class="form-group">
+                        <label class="form-label" for="inspiration-type">Type</label>
+                        <select id="inspiration-type" class="form-control">
+                            <option value="quran">Quranic Ayah</option>
+                            <option value="hadith">Hadith</option>
+                            <option value="quote">Scholar Quote</option>
+                            <option value="personal">Personal Reflection</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="inspiration-content">Content</label>
+                        <textarea id="inspiration-content" class="form-control" rows="5" placeholder="Enter the ayah, hadith, or quote text"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="inspiration-source">Source/Reference</label>
+                        <input type="text" id="inspiration-source" class="form-control" placeholder="e.g., Surah Al-Baqarah 2:186">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="inspiration-areas">Related Focus Areas</label>
+                        <div id="inspiration-areas" class="checkbox-group">
+                            <!-- Focus areas will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="inspiration-notes">Personal Notes</label>
+                        <textarea id="inspiration-notes" class="form-control" placeholder="How does this inspire your journey?"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline modal-close-btn">Cancel</button>
+                <button class="btn btn-primary" id="save-inspiration-btn">Save Inspiration</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Database setup
+        let db;
+        const DB_NAME = 'PureHeartPathDB';
+        const DB_VERSION = 1;
+        
+        // Initialize IndexedDB
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                
+                request.onerror = event => {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+                
+                request.onsuccess = event => {
+                    db = event.target.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = event => {
+                    const db = event.target.result;
+                    
+                    // Create object stores
+                    if (!db.objectStoreNames.contains('areas')) {
+                        const areasStore = db.createObjectStore('areas', { keyPath: 'id', autoIncrement: true });
+                        areasStore.createIndex('name', 'name', { unique: false });
+                        areasStore.createIndex('category', 'category', { unique: false });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('habits')) {
+                        const habitsStore = db.createObjectStore('habits', { keyPath: 'id', autoIncrement: true });
+                        habitsStore.createIndex('name', 'name', { unique: false });
+                        habitsStore.createIndex('areaId', 'areaId', { unique: false });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('goals')) {
+                        const goalsStore = db.createObjectStore('goals', { keyPath: 'id', autoIncrement: true });
+                        goalsStore.createIndex('name', 'name', { unique: false });
+                        goalsStore.createIndex('areaId', 'areaId', { unique: false });
+                        goalsStore.createIndex('status', 'status', { unique: false });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('reflections')) {
+                        const reflectionsStore = db.createObjectStore('reflections', { keyPath: 'id', autoIncrement: true });
+                        reflectionsStore.createIndex('date', 'date', { unique: false });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('inspirations')) {
+                        const inspirationsStore = db.createObjectStore('inspirations', { keyPath: 'id', autoIncrement: true });
+                        inspirationsStore.createIndex('type', 'type', { unique: false });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('habitLogs')) {
+                        const habitLogsStore = db.createObjectStore('habitLogs', { keyPath: 'id', autoIncrement: true });
+                        habitLogsStore.createIndex('habitId', 'habitId', { unique: false });
+                        habitLogsStore.createIndex('date', 'date', { unique: false });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('goalProgress')) {
+                        const goalProgressStore = db.createObjectStore('goalProgress', { keyPath: 'id', autoIncrement: true });
+                        goalProgressStore.createIndex('goalId', 'goalId', { unique: false });
+                        goalProgressStore.createIndex('date', 'date', { unique: false });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('virtuesVices')) {
+                        const virtuesVicesStore = db.createObjectStore('virtuesVices', { keyPath: 'id', autoIncrement: true });
+                        virtuesVicesStore.createIndex('type', 'type', { unique: false });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('settings')) {
+                        db.createObjectStore('settings', { keyPath: 'key' });
+                    }
+                };
+            });
+        }
+        
+        // Database CRUD operations
+        function addData(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(storeName, 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.add(data);
+                
+                request.onsuccess = event => {
+                    resolve(event.target.result);
+                };
+                
+                request.onerror = event => {
+                    reject('Error adding data: ' + event.target.errorCode);
+                };
+            });
+        }
+        
+        function getAllData(storeName) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(storeName, 'readonly');
+                const store = transaction.objectStore(storeName);
+                const request = store.getAll();
+                
+                request.onsuccess = event => {
+                    resolve(event.target.result);
+                };
+                
+                request.onerror = event => {
+                    reject('Error getting data: ' + event.target.errorCode);
+                };
+            });
+        }
+        
+        function getData(storeName, id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(storeName, 'readonly');
+                const store = transaction.objectStore(storeName);
+                const request = store.get(id);
+                
+                request.onsuccess = event => {
+                    resolve(event.target.result);
+                };
+                
+                request.onerror = event => {
+                    reject('Error getting data: ' + event.target.errorCode);
+                };
+            });
+        }
+        
+        function updateData(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(storeName, 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.put(data);
+                
+                request.onsuccess = event => {
+                    resolve(event.target.result);
+                };
+                
+                request.onerror = event => {
+                    reject('Error updating data: ' + event.target.errorCode);
+                };
+            });
+        }
+        
+        function deleteData(storeName, id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(storeName, 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.delete(id);
+                
+                request.onsuccess = event => {
+                    resolve(true);
+                };
+                
+                request.onerror = event => {
+                    reject('Error deleting data: ' + event.target.errorCode);
+                };
+            });
+        }
+        
+        function getDataByIndex(storeName, indexName, value) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(storeName, 'readonly');
+                const store = transaction.objectStore(storeName);
+                const index = store.index(indexName);
+                const request = index.getAll(value);
+                
+                request.onsuccess = event => {
+                    resolve(event.target.result);
+                };
+                
+                request.onerror = event => {
+                    reject('Error getting data by index: ' + event.target.errorCode);
+                };
+            });
+        }
+        
+        // UI Navigation
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const pages = document.querySelectorAll('.page');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const targetPage = item.getAttribute('data-page');
+                    
+                    // Update active nav item
+                    navItems.forEach(navItem => {
+                        navItem.classList.remove('active');
+                    });
+                    item.classList.add('active');
+                    
+                    // Show the target page and hide others
+                    pages.forEach(page => {
+                        if (page.id === targetPage) {
+                            page.classList.remove('hidden');
+                        } else {
+                            page.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        }
+        
+        // Tab Navigation
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetTab = tab.getAttribute('data-tab');
+                    const tabContainer = tab.closest('.tab-container');
+                    
+                    // Update active tab
+                    tabContainer.querySelectorAll('.tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    tab.classList.add('active');
+                    
+                    // Show the target tab content and hide others
+                    tabContainer.querySelectorAll('.tab-content').forEach(content => {
+                        if (content.id === targetTab) {
+                            content.classList.add('active');
+                        } else {
+                            content.classList.remove('active');
+                        }
+                    });
+                });
+            });
+        }
+        
+        // Modal Management
+        function setupModals() {
+            const modalTriggers = {
+                'new-area-btn': 'area-modal',
+                'create-area-btn': 'area-modal',
+                'add-habit-btn': 'habit-modal',
+                'create-habit-btn': 'habit-modal',
+                'create-goal-btn': 'goal-modal',
+                'add-reflection-btn': 'reflection-modal',
+                'create-reflection-btn': 'reflection-modal',
+                'add-inspiration-btn': 'inspiration-modal'
+            };
+            
+            // Open modal triggers
+            Object.keys(modalTriggers).forEach(triggerId => {
+                const button = document.getElementById(triggerId);
+                if (button) {
+                    button.addEventListener('click', () => {
+                        const modalId = modalTriggers[triggerId];
+                        openModal(modalId);
+                    });
+                }
+            });
+            
+            // Close modal triggers
+            document.querySelectorAll('.modal-close, .modal-close-btn').forEach(button => {
+                button.addEventListener('click', event => {
+                    const modal = event.target.closest('.modal');
+                    closeModal(modal.id);
+                });
+            });
+            
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', event => {
+                    if (event.target === modal) {
+                        closeModal(modal.id);
+                    }
+                });
+            });
+        }
+        
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('open');
+            
+            // Reset form if present
+            const form = modal.querySelector('form');
+            if (form) form.reset();
+            
+            // Set today's date for date inputs
+            const dateInputs = modal.querySelectorAll('input[type="date"]');
+            const today = new Date().toISOString().split('T');
+            dateInputs.forEach(input => {
+                input.value = today;
+            });
+            
+            // Setup specific modal initialization
+            if (modalId === 'habit-modal') {
+                loadFocusAreasInSelect('habit-area');
+            } else if (modalId === 'goal-modal') {
+                loadFocusAreasInSelect('goal-area');
+            } else if (modalId === 'reflection-modal') {
+                loadFocusAreasCheckboxes('reflection-areas');
+            } else if (modalId === 'inspiration-modal') {
+                loadFocusAreasCheckboxes('inspiration-areas');
+            }
+        }
+        
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('open');
+        }
+        
+        // Load Focus Areas into Select Dropdowns
+        async function loadFocusAreasInSelect(selectId) {
+            try {
+                const areas = await getAllData('areas');
+                const select = document.getElementById(selectId);
+                
+                // Clear existing options except first one
+                select.innerHTML = '<option value="">Select a focus area</option>';
+                
+                // Add areas as options
+                areas.forEach(area => {
+                    const option = document.createElement('option');
+                    option.value = area.id;
+                    option.textContent = area.name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading focus areas:', error);
+            }
+        }
+        
+        // Load Focus Areas as Checkboxes
+        async function loadFocusAreasCheckboxes(containerId) {
+            try {
+                const areas = await getAllData('areas');
+                const container = document.getElementById(containerId);
+                
+                container.innerHTML = '';
+                
+                areas.forEach(area => {
+                    const label = document.createElement('label');
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = area.id;
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(' ' + area.name));
+                    container.appendChild(label);
+                });
+            } catch (error) {
+                console.error('Error loading focus areas checkboxes:', error);
+            }
+        }
+        
+        // Form Submission Handlers
+        function setupFormHandlers() {
+            // Area Form
+            document.getElementById('save-area-btn').addEventListener('click', async () => {
+                const form = document.getElementById('area-form');
+                const areaData = {
+                    name: document.getElementById('area-name').value,
+                    description: document.getElementById('area-description').value,
+                    category: document.querySelector('input[name="area-category"]:checked').value,
+                    inspiration: document.getElementById('area-inspiration').value,
+                    priority: document.getElementById('area-priority').value,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                
+                try {
+                    await addData('areas', areaData);
+                    closeModal('area-modal');
+                    loadFocusAreas();
+                    loadDashboard();
+                } catch (error) {
+                    console.error('Error saving area:', error);
+                }
+            });
+            
+            // Habit Form
+            document.getElementById('save-habit-btn').addEventListener('click', async () => {
+                const selectedDays = [];
+                document.querySelectorAll('#habit-frequency input:checked').forEach(checkbox => {
+                    selectedDays.push(parseInt(checkbox.value));
+                });
+                
+                const habitData = {
+                    name: document.getElementById('habit-name').value,
+                    description: document.getElementById('habit-description').value,
+                    areaId: parseInt(document.getElementById('habit-area').value) || null,
+                    frequency: selectedDays,
+                    reminder: document.getElementById('habit-reminder').value,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    status: 'active',
+                    streak: 0,
+                    totalCompleted: 0
+                };
+                
+                try {
+                    await addData('habits', habitData);
+                    closeModal('habit-modal');
+                    loadHabits();
+                    loadDashboardHabits();
+                } catch (error) {
+                    console.error('Error saving habit:', error);
+                }
+            });
+            
+            // Goal Form
+            document.getElementById('save-goal-btn').addEventListener('click', async () => {
+                const goalData = {
+                    name: document.getElementById('goal-name').value,
+                    description: document.getElementById('goal-description').value,
+                    areaId: parseInt(document.getElementById('goal-area').value) || null,
+                    targetDate: document.getElementById('goal-target').value,
+                    measure: document.getElementById('goal-measure').value,
+                    milestones: document.getElementById('goal-milestones').value,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    status: 'active',
+                    progress: 0
+                };
+                
+                try {
+                    await addData('goals', goalData);
+                    closeModal('goal-modal');
+                    loadGoals();
+                } catch (error) {
+                    console.error('Error saving goal:', error);
+                }
+            });
+            
+            // Reflection Form
+            document.getElementById('save-reflection-btn').addEventListener('click', async () => {
+                const selectedAreas = [];
+                document.querySelectorAll('#reflection-areas input:checked').forEach(checkbox => {
+                    selectedAreas.push(parseInt(checkbox.value));
+                });
+                
+                const reflectionData = {
+                    date: document.getElementById('reflection-date').value,
+                    content: document.getElementById('reflection-content').value,
+                    mood: document.getElementById('reflection-mood').value,
+                    areas: selectedAreas,
+                    insights: document.getElementById('reflection-insights').value,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                
+                try {
+                    await addData('reflections', reflectionData);
+                    closeModal('reflection-modal');
+                    loadReflections();
+                    updateTodayReflection();
+                } catch (error) {
+                    console.error('Error saving reflection:', error);
+                }
+            });
+            
+            // Inspiration Form
+            document.getElementById('save-inspiration-btn').addEventListener('click', async () => {
+                const selectedAreas = [];
+                document.querySelectorAll('#inspiration-areas input:checked').forEach(checkbox => {
+                    selectedAreas.push(parseInt(checkbox.value));
+                });
+                
+                const inspirationData = {
+                    type: document.getElementById('inspiration-type').value,
+                    content: document.getElementById('inspiration-content').value,
+                    source: document.getElementById('inspiration-source').value,
+                    areas: selectedAreas,
+                    notes: document.getElementById('inspiration-notes').value,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                
+                try {
+                    await addData('inspirations', inspirationData);
+                    closeModal('inspiration-modal');
+                    loadInspirations();
+                } catch (error) {
+                    console.error('Error saving inspiration:', error);
+                }
+            });
+			document.getElementById('save-goal-btn').addEventListener('click', handleSaveGoal);
+        }
+        
+        // Load Dashboard Content
+        async function loadDashboard() {
+            await loadDashboardHabits();
+            await loadFocusAreasSummary();
+            updateTodayReflection();
+            updateDailyProgress();
+}
+
+        // Load Today's Habits for Dashboard
+        async function loadDashboardHabits() {
+            try {
+                const habits = await getAllData('habits');
+                const today = new Date();
+                const dayOfWeek = today.getDay();
+                const dateStr = today.toISOString().split('T');
+                
+                // Filter habits for today
+                const todayHabits = habits.filter(habit => 
+                    habit.status === 'active' && 
+                    habit.frequency.includes(dayOfWeek)
+                );
+                
+                // Get today's habit logs
+                const habitLogs = await getDataByIndex('habitLogs', 'date', dateStr);
+                
+                const habitsList = document.getElementById('today-habits');
+                habitsList.innerHTML = '';
+                
+                if (todayHabits.length === 0) {
+                    habitsList.innerHTML = '<p style="padding: 1rem; color: var(--gray);">No habits scheduled for today. <a href="#" id="quick-add-habit">Add one?</a></p>';
+                    document.getElementById('quick-add-habit').addEventListener('click', () => {
+                        openModal('habit-modal');
+                    });
+                    return;
+                }
+                
+                todayHabits.forEach(habit => {
+                    const completed = habitLogs.some(log => log.habitId === habit.id);
+                    
+                    const habitItem = document.createElement('div');
+                    habitItem.className = 'habit-item';
+                    habitItem.innerHTML = `
+                        <input type="checkbox" class="habit-check" data-id="${habit.id}" ${completed ? 'checked' : ''}>
+                        <div class="habit-info">
+                            <div class="habit-name">${habit.name}</div>
+                            <div class="habit-desc">${habit.description}</div>
+                        </div>
+                        <div class="streak">🔥 ${habit.streak}</div>
+                    `;
+                    
+                    habitsList.appendChild(habitItem);
+                    
+                    // Add event listener for checkbox
+                    const checkbox = habitItem.querySelector('.habit-check');
+                    checkbox.addEventListener('change', async (e) => {
+                        const habitId = parseInt(e.target.getAttribute('data-id'));
+                        if (e.target.checked) {
+                            // Complete habit
+                            await completeHabit(habitId);
+                        } else {
+                            // Uncomplete habit
+                            await uncompleteHabit(habitId);
+                        }
+                        updateDailyProgress();
+                    });
+                });
+                
+                // Update stats
+                updateHabitStats(todayHabits, habitLogs);
+                
+            } catch (error) {
+                console.error('Error loading dashboard habits:', error);
+            }
+        }
+        
+        // Update Habit Stats
+        function updateHabitStats(habits, logs) {
+            const completed = logs.length;
+            const total = habits.length;
+            
+            document.getElementById('habits-completed').textContent = completed;
+            document.getElementById('habits-total').textContent = total;
+            
+            // Calculate daily progress percentage
+            const progressPercent = total > 0 ? Math.round((completed / total) * 100) : 0;
+            document.getElementById('daily-progress').style.width = `${progressPercent}%`;
+        }
+        
+        // Complete Habit
+        async function completeHabit(habitId) {
+            try {
+                const habit = await getData('habits', habitId);
+                const today = new Date();
+                const dateStr = today.toISOString().split('T');
+                
+                // Check if already completed today
+                const existingLogs = await getDataByIndex('habitLogs', 'habitId', habitId);
+                const todayLog = existingLogs.find(log => log.date === dateStr);
+                
+                if (!todayLog) {
+                    // Create new log
+                    const logData = {
+                        habitId: habitId,
+                        date: dateStr,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    await addData('habitLogs', logData);
+                    
+                    // Update habit streak and total
+                    const yesterday = new Date(today);
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    const yesterdayStr = yesterday.toISOString().split('T');
+                    
+                    const yesterdayLog = existingLogs.find(log => log.date === yesterdayStr);
+                    
+                    // Update streak
+                    if (yesterdayLog || habit.streak === 0) {
+                        habit.streak += 1;
+                    } else {
+                        habit.streak = 1; // Reset streak if broken
+                    }
+                    
+                    habit.totalCompleted += 1;
+                    habit.updatedAt = new Date().toISOString();
+                    
+                    await updateData('habits', habit);
+                    await loadDashboardHabits();
+                }
+            } catch (error) {
+                console.error('Error completing habit:', error);
+            }
+        }
+        
+        // Uncomplete Habit
+        async function uncompleteHabit(habitId) {
+            try {
+                const today = new Date();
+                const dateStr = today.toISOString().split('T');
+                
+                // Find today's log for this habit
+                const habitLogs = await getDataByIndex('habitLogs', 'habitId', habitId);
+                const todayLog = habitLogs.find(log => log.date === dateStr);
+                
+                if (todayLog) {
+                    // Delete the log
+                    await deleteData('habitLogs', todayLog.id);
+                    
+                    // Update habit stats
+                    const habit = await getData('habits', habitId);
+                    if (habit.totalCompleted > 0) {
+                        habit.totalCompleted -= 1;
+                    }
+                    
+                    // Adjust streak
+                    if (habit.streak > 0) {
+                        habit.streak -= 1;
+                    }
+                    
+                    habit.updatedAt = new Date().toISOString();
+                    await updateData('habits', habit);
+                    await loadDashboardHabits();
+                }
+            } catch (error) {
+                console.error('Error uncompleting habit:', error);
+            }
+        }
+        
+        // Load Focus Areas Summary for Dashboard
+        async function loadFocusAreasSummary() {
+            try {
+                const areas = await getAllData('areas');
+                const container = document.getElementById('focus-areas-list');
+                container.innerHTML = '';
+                
+                if (areas.length === 0) {
+                    container.innerHTML = '<p style="padding: 1rem; color: var(--gray);">No focus areas defined yet. <a href="#" id="quick-add-area">Create your first area?</a></p>';
+                    document.getElementById('quick-add-area').addEventListener('click', () => {
+                        openModal('area-modal');
+                    });
+                    return;
+                }
+                
+                // Show only up to 3 areas on dashboard
+                const displayAreas = areas.sort((a, b) => {
+                    const priorityOrder = { high: 0, medium: 1, low: 2 };
+                    return priorityOrder[a.priority] - priorityOrder[b.priority];
+                }).slice(0, 3);
+                
+                for (const area of displayAreas) {
+                    // Get related habits
+                    const habits = await getDataByIndex('habits', 'areaId', area.id);
+                    const activeHabits = habits.filter(h => h.status === 'active');
+                    
+                    // Get related goals
+                    const goals = await getDataByIndex('goals', 'areaId', area.id);
+                    const activeGoals = goals.filter(g => g.status === 'active');
+                    
+                    const areaItem = document.createElement('div');
+                    areaItem.className = 'habit-item';
+                    areaItem.innerHTML = `
+                        <div class="habit-info">
+                            <div class="habit-name">${area.name}</div>
+                            <div class="habit-desc">
+                                ${activeHabits.length} habits · ${activeGoals.length} goals · 
+                                ${area.category === 'virtue' ? '✨ Virtue' : '🛡️ Vice'}
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-outline area-details-btn" data-id="${area.id}">Details</button>
+                    `;
+                    
+                    container.appendChild(areaItem);
+                }
+                
+                // Add event listeners to detail buttons
+                document.querySelectorAll('.area-details-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const areaId = parseInt(e.target.getAttribute('data-id'));
+                        // Navigate to areas page and show details
+                        document.querySelector('.nav-item[data-page="areas"]').click();
+                        showAreaDetails(areaId);
+                    });
+                });
+                
+            } catch (error) {
+                console.error('Error loading focus areas summary:', error);
+            }
+        }
+        
+        // Update Today's Reflection on Dashboard
+        async function updateTodayReflection() {
+            try {
+                const today = new Date().toISOString().split('T');
+                const reflections = await getDataByIndex('reflections', 'date', today);
+                
+                const reflectionContainer = document.getElementById('today-reflection');
+                
+                if (reflections.length > 0) {
+                    // Show the most recent reflection
+                    const reflection = reflections[reflections.length - 1];
+                    reflectionContainer.innerHTML = `
+                        <p class="journal-content">${reflection.content}</p>
+                    `;
+                } else {
+                    reflectionContainer.innerHTML = `
+                        <p style="color: var(--gray);">No reflection yet today. Take a moment to reflect on your journey.</p>
+                        <button class="btn btn-sm btn-outline" id="quick-add-reflection" style="margin-top: 0.5rem;">Write Reflection</button>
+                    `;
+                    
+                    document.getElementById('quick-add-reflection').addEventListener('click', () => {
+                        openModal('reflection-modal');
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating today reflection:', error);
+            }
+        }
+        
+        // Update Daily Progress
+        async function updateDailyProgress() {
+            try {
+                const habits = await getAllData('habits');
+                const today = new Date();
+                const dayOfWeek = today.getDay();
+                const dateStr = today.toISOString().split('T');
+                
+                // Filter habits for today
+                const todayHabits = habits.filter(habit => 
+                    habit.status === 'active' && 
+                    habit.frequency.includes(dayOfWeek)
+                );
+                
+                // Get today's habit logs
+                const habitLogs = await getDataByIndex('habitLogs', 'date', dateStr);
+                
+                // Update stats
+                updateHabitStats(todayHabits, habitLogs);
+                
+                // Update streak display
+                document.getElementById('streak-count').textContent = await calculateCurrentStreak();
+            } catch (error) {
+                console.error('Error updating daily progress:', error);
+            }
+        }
+        
+        // Calculate Current Streak
+        async function calculateCurrentStreak() {
+            try {
+                const today = new Date();
+                let currentDate = new Date(today);
+                let streak = 0;
+                
+                // Go back day by day to check consecutive days with completed habits
+                while (true) {
+                    const dateStr = currentDate.toISOString().split('T');
+                    const dayOfWeek = currentDate.getDay();
+                    
+                    // Get habits for this day
+                    const habits = await getAllData('habits');
+                    const dayHabits = habits.filter(habit => 
+                        habit.status === 'active' && 
+                        habit.frequency.includes(dayOfWeek)
+                    );
+                    
+                    // Get completed habits for this day
+                    const habitLogs = await getDataByIndex('habitLogs', 'date', dateStr);
+                    
+                    // If no habits scheduled for this day, skip it
+                    if (dayHabits.length === 0) {
+                        currentDate.setDate(currentDate.getDate() - 1);
+                        continue;
+                    }
+                    
+                    // Check if all habits were completed
+                    const allCompleted = dayHabits.every(habit => 
+                        habitLogs.some(log => log.habitId === habit.id)
+                    );
+                    
+                    if (allCompleted) {
+                        streak++;
+                        currentDate.setDate(currentDate.getDate() - 1);
+                    } else {
+                        break;
+                    }
+                    
+                    // Limit to checking the last 30 days
+                    if (streak >= 30) break;
+                }
+                
+                return streak;
+            } catch (error) {
+                console.error('Error calculating streak:', error);
+                return 0;
+            }
+        }
+        
+        // Load Focus Areas Page
+        async function loadFocusAreas() {
+            try {
+                const areas = await getAllData('areas');
+                const container = document.getElementById('areas-container');
+                container.innerHTML = '';
+                
+                if (areas.length === 0) {
+                    container.innerHTML = '<p>No focus areas defined yet. Create your first area to begin your journey.</p>';
+                    return;
+                }
+                
+                for (const area of areas) {
+                    // Get related habits
+                    const habits = await getDataByIndex('habits', 'areaId', area.id);
+                    const activeHabits = habits.filter(h => h.status === 'active');
+                    
+                    // Get related goals
+                    const goals = await getDataByIndex('goals', 'areaId', area.id);
+                    const activeGoals = goals.filter(g => g.status === 'active');
+                    
+                    // Calculate progress for this area
+                    const habitProgress = calculateHabitProgress(habits);
+                    const goalProgress = calculateGoalProgress(goals);
+                    const overallProgress = (habitProgress + goalProgress) / 2;
+                    
+                    const areaCard = document.createElement('div');
+                    areaCard.className = 'card';
+                    areaCard.innerHTML = `
+                        <div class="card-header">
+                            <h3 class="card-title">${area.name}</h3>
+                            <div class="card-actions">
+                                <button class="btn btn-sm btn-outline edit-area-btn" data-id="${area.id}">Edit</button>
+                            </div>
+                        </div>
+                        <div class="badge ${area.category === 'virtue' ? 'badge-secondary' : 'badge-primary'}">
+                            ${area.category === 'virtue' ? 'Virtue to Cultivate' : 'Vice to Overcome'}
+                        </div>
+                        <p style="margin-top: 1rem;">${area.description || 'No description'}</p>
+                        
+                        <div class="progress-container" style="margin-top: 1.5rem;">
+                            <div class="progress-bar" style="width: ${overallProgress}%"></div>
+                        </div>
+                        
+                        <div class="stats">
+                            <div class="stat">
+                                <div class="stat-value">${activeHabits.length}</div>
+                                <div class="stat-label">Habits</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${activeGoals.length}</div>
+                                <div class="stat-label">Goals</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${area.priority.charAt(0).toUpperCase() + area.priority.slice(1)}</div>
+                                <div class="stat-label">Priority</div>
+                            </div>
+                        </div>
+                        
+                        ${area.inspiration ? `
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(58, 123, 213, 0.05); border-radius: 8px;">
+                            <p style="font-style: italic;">"${area.inspiration}"</p>
+                        </div>
+                        ` : ''}
+                        
+                        <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+                            <button class="btn btn-sm btn-outline view-area-habits-btn" data-id="${area.id}">View Habits</button>
+                            <button class="btn btn-sm btn-outline view-area-goals-btn" data-id="${area.id}">View Goals</button>
+                        </div>
+                    `;
+                    
+                    container.appendChild(areaCard);
+                }
+                
+                // Add event listeners
+                document.querySelectorAll('.edit-area-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const areaId = parseInt(e.target.getAttribute('data-id'));
+                        editArea(areaId);
+                    });
+                });
+                
+                document.querySelectorAll('.view-area-habits-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const areaId = parseInt(e.target.getAttribute('data-id'));
+                        document.querySelector('.nav-item[data-page="habits"]').click();
+                        filterHabitsByArea(areaId);
+                    });
+                });
+                
+                document.querySelectorAll('.view-area-goals-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const areaId = parseInt(e.target.getAttribute('data-id'));
+                        document.querySelector('.nav-item[data-page="goals"]').click();
+                        filterGoalsByArea(areaId);
+                    });
+                });
+                
+            } catch (error) {
+                console.error('Error loading focus areas:', error);
+            }
+        }
+        
+        // Calculate Habit Progress
+        function calculateHabitProgress(habits) {
+            if (habits.length === 0) return 0;
+            
+            const totalHabits = habits.length;
+            const completedHabits = habits.filter(h => h.status === 'completed').length;
+            
+            return (completedHabits / totalHabits) * 100;
+        }
+        
+        // Calculate Goal Progress
+        function calculateGoalProgress(goals) {
+            if (goals.length === 0) return 0;
+            
+            const totalGoals = goals.length;
+            const completedGoals = goals.filter(g => g.status === 'completed').length;
+            const activeGoalsProgress = goals
+                .filter(g => g.status === 'active')
+                .reduce((sum, goal) => sum + (goal.progress || 0), 0);
+            
+            return ((completedGoals * 100) + activeGoalsProgress) / totalGoals;
+        }
+        
+        // Edit Area
+        async function editArea(areaId) {
+            try {
+                const area = await getData('areas', areaId);
+                
+                // Set form values
+                document.getElementById('area-name').value = area.name;
+                document.getElementById('area-description').value = area.description || '';
+                document.querySelector(`input[name="area-category"][value="${area.category}"]`).checked = true;
+                document.getElementById('area-inspiration').value = area.inspiration || '';
+                document.getElementById('area-priority').value = area.priority;
+                
+                // Update modal title and button
+                document.getElementById('area-modal-title').textContent = 'Edit Focus Area';
+                const saveBtn = document.getElementById('save-area-btn');
+                saveBtn.textContent = 'Update Focus Area';
+                
+                // Store the area ID
+                saveBtn.setAttribute('data-id', areaId);
+                
+                // Add event listener for update
+                saveBtn.removeEventListener('click', handleSaveArea);
+                saveBtn.addEventListener('click', handleUpdateArea);
+                
+                openModal('area-modal');
+            } catch (error) {
+                console.error('Error editing area:', error);
+            }
+        }
+        
+        // Handle Save Area
+        async function handleSaveArea() {
+            const areaData = {
+                name: document.getElementById('area-name').value,
+                description: document.getElementById('area-description').value,
+                category: document.querySelector('input[name="area-category"]:checked').value,
+                inspiration: document.getElementById('area-inspiration').value,
+                priority: document.getElementById('area-priority').value,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            try {
+                await addData('areas', areaData);
+                closeModal('area-modal');
+                loadFocusAreas();
+                loadDashboard();
+            } catch (error) {
+                console.error('Error saving area:', error);
+            }
+        }
+        
+        // Handle Update Area
+        async function handleUpdateArea(e) {
+            const areaId = parseInt(e.target.getAttribute('data-id'));
+            
+            try {
+                const area = await getData('areas', areaId);
+                
+                area.name = document.getElementById('area-name').value;
+                area.description = document.getElementById('area-description').value;
+                area.category = document.querySelector('input[name="area-category"]:checked').value;
+                area.inspiration = document.getElementById('area-inspiration').value;
+                area.priority = document.getElementById('area-priority').value;
+                area.updatedAt = new Date().toISOString();
+                
+                await updateData('areas', area);
+                
+                // Reset the button to save new areas
+                const saveBtn = document.getElementById('save-area-btn');
+                saveBtn.textContent = 'Save Focus Area';
+                saveBtn.removeAttribute('data-id');
+                saveBtn.removeEventListener('click', handleUpdateArea);
+                saveBtn.addEventListener('click', handleSaveArea);
+                
+                closeModal('area-modal');
+                loadFocusAreas();
+                loadDashboard();
+            } catch (error) {
+                console.error('Error updating area:', error);
+            }
+        }
+        
+        // Show Area Details
+        async function showAreaDetails(areaId) {
+            // Implementation will depend on your UI design
+            // This function is intended to show more details about a specific area
+            // For now, we'll just trigger the edit modal
+            editArea(areaId);
+        }
+        
+        // Filter Habits by Area
+        async function filterHabitsByArea(areaId) {
+            // Implementation will load habits page and filter by area
+            // This can be implemented based on your UI requirements
+        }
+        
+        // Filter Goals by Area
+        async function filterGoalsByArea(areaId) {
+            // Implementation will load goals page and filter by area
+            // This can be implemented based on your UI requirements
+        }
+        
+        // Load Habits Page
+        async function loadHabits() {
+            try {
+                const habits = await getAllData('habits');
+                
+                // Sort by active status first, then by name
+                habits.sort((a, b) => {
+                    if (a.status !== b.status) {
+                        return a.status === 'active' ? -1 : 1;
+                    }
+                    return a.name.localeCompare(b.name);
+                });
+                
+                const activeHabits = habits.filter(h => h.status === 'active');
+                const completedHabits = habits.filter(h => h.status === 'completed');
+                
+                // Populate active habits
+                populateHabitsList('active-habits-list', activeHabits);
+                
+                // Populate completed habits
+                populateHabitsList('completed-habits-list', completedHabits);
+                
+                // Populate all habits
+                populateHabitsList('all-habits-list', habits);
+                
+            } catch (error) {
+                console.error('Error loading habits:', error);
+            }
+        }
+        
+        // Populate Habits List
+        async function populateHabitsList(containerId, habits) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            if (habits.length === 0) {
+                container.innerHTML = '<p style="padding: 1rem; color: var(--gray);">No habits found.</p>';
+                return;
+            }
+            
+            for (const habit of habits) {
+                // Get related area
+                let areaName = 'No specific area';
+                if (habit.areaId) {
+                    const area = await getData('areas', habit.areaId);
+                    if (area) {
+                        areaName = area.name;
+                    }
+                }
+                
+                // Get habit logs
+                const logs = await getDataByIndex('habitLogs', 'habitId', habit.id);
+                
+                // Calculate completion rate
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const thirtyDaysAgo = new Date(today);
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                
+                let daysScheduled = 0;
+                let daysCompleted = 0;
+                
+                // Check each of the last 30 days
+                for (let d = new Date(thirtyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
+                    const dayOfWeek = d.getDay();
+                    const dateStr = d.toISOString().split('T');
+                    
+                    // Check if habit was scheduled for this day
+                    if (habit.frequency.includes(dayOfWeek)) {
+                        daysScheduled++;
+                        
+                        // Check if habit was completed this day
+                        if (logs.some(log => log.date === dateStr)) {
+                            daysCompleted++;
+                        }
+                    }
+                }
+                
+                // Calculate completion percentage
+                const completionRate = daysScheduled > 0 
+                    ? Math.round((daysCompleted / daysScheduled) * 100) 
+                    : 0;
+                
+                const habitCard = document.createElement('div');
+                habitCard.className = 'card';
+                habitCard.innerHTML = `
+                    <div class="card-header">
+                        <h3 class="card-title">${habit.name}</h3>
+                        <div class="card-actions">
+                            <button class="btn btn-sm btn-outline edit-habit-btn" data-id="${habit.id}">Edit</button>
+                        </div>
+                    </div>
+                    <div class="badge badge-primary">${areaName}</div>
+                    <p style="margin-top: 1rem;">${habit.description || 'No description'}</p>
+                    
+                    <div class="progress-container" style="margin-top: 1.5rem;">
+                        <div class="progress-bar" style="width: ${completionRate}%"></div>
+                    </div>
+                    
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value">${habit.streak}</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">${habit.totalCompleted}</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">${completionRate}%</div>
+                            <div class="stat-label">Completion</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem;">
+                        <div class="calendar-header">
+                            <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+                        </div>
+                        <div class="calendar habit-calendar" data-id="${habit.id}"></div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+                        ${habit.status === 'active' ? 
+                            `<button class="btn btn-sm btn-outline complete-habit-btn" data-id="${habit.id}">Complete for Today</button>
+                             <button class="btn btn-sm btn-outline archive-habit-btn" data-id="${habit.id}">Archive</button>` :
+                            `<button class="btn btn-sm btn-outline reactivate-habit-btn" data-id="${habit.id}">Reactivate</button>`
+                        }
+                    </div>
+                `;
+                
+                container.appendChild(habitCard);
+                
+                // Render habit calendar
+                renderHabitCalendar(habit.id, habitCard.querySelector('.habit-calendar'));
+            }
+            
+            // Add event listeners
+            container.querySelectorAll('.edit-habit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const habitId = parseInt(e.target.getAttribute('data-id'));
+                    editHabit(habitId);
+                });
+            });
+            
+            container.querySelectorAll('.complete-habit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const habitId = parseInt(e.target.getAttribute('data-id'));
+                    completeHabit(habitId).then(() => {
+                        loadHabits();
+                        loadDashboardHabits();
+                    });
+                });
+            });
+            
+            container.querySelectorAll('.archive-habit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const habitId = parseInt(e.target.getAttribute('data-id'));
+                    archiveHabit(habitId);
+                });
+            });
+            
+            container.querySelectorAll('.reactivate-habit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const habitId = parseInt(e.target.getAttribute('data-id'));
+                    reactivateHabit(habitId);
+                });
+            });
+        }
+        
+        // Render Habit Calendar
+        async function renderHabitCalendar(habitId, calendarElement) {
+            try {
+                // Get habit data
+                const habit = await getData('habits', habitId);
+                
+                // Get habit logs
+                const logs = await getDataByIndex('habitLogs', 'habitId', habitId);
+                
+                // Create a map of completion dates
+                const completedDates = {};
+                logs.forEach(log => {
+                    completedDates[log.date] = true;
+                });
+                
+                // Get today and 20 days before
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const startDate = new Date(today);
+                startDate.setDate(startDate.getDate() - 20);
+                
+                // Clear the calendar
+                calendarElement.innerHTML = '';
+                
+                // Render days
+                for (let d = new Date(startDate); d <= today; d.setDate(d.getDate() + 1)) {
+                    const dayOfWeek = d.getDay();
+                    const dateStr = d.toISOString().split('T');
+                    const isScheduled = habit.frequency.includes(dayOfWeek);
+                    
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    
+                    // Add appropriate classes
+                    if (isScheduled) {
+                        if (completedDates[dateStr]) {
+                            dayElement.classList.add('day-completed');
+                        } else if (d < today) {
+                            dayElement.classList.add('day-missed');
+                        } else {
+                            dayElement.classList.add('day-empty');
+                        }
+                    } else {
+                        dayElement.classList.add('day-empty');
+                    }
+                    
+                    if (d.toDateString() === today.toDateString()) {
+                        dayElement.classList.add('day-current');
+                    }
+                    
+                    // Add date as content
+                    dayElement.textContent = d.getDate();
+                    
+                    calendarElement.appendChild(dayElement);
+                }
+            } catch (error) {
+                console.error('Error rendering habit calendar:', error);
+            }
+        }
+        
+        // Archive Habit
+        async function archiveHabit(habitId) {
+            try {
+                const habit = await getData('habits', habitId);
+                habit.status = 'completed';
+                habit.updatedAt = new Date().toISOString();
+                
+                await updateData('habits', habit);
+                loadHabits();
+                loadDashboardHabits();
+            } catch (error) {
+                console.error('Error archiving habit:', error);
+            }
+        }
+        
+        // Reactivate Habit
+        async function reactivateHabit(habitId) {
+            try {
+                const habit = await getData('habits', habitId);
+                habit.status = 'active';
+                habit.updatedAt = new Date().toISOString();
+                
+                await updateData('habits', habit);
+                loadHabits();
+                loadDashboardHabits();
+            } catch (error) {
+                console.error('Error reactivating habit:', error);
+            }
+        }
+        
+        // Edit Habit
+        async function editHabit(habitId) {
+            try {
+                const habit = await getData('habits', habitId);
+                
+                // Load focus areas for select dropdown
+                await loadFocusAreasInSelect('habit-area');
+                
+                // Set form values
+                document.getElementById('habit-name').value = habit.name;
+                document.getElementById('habit-description').value = habit.description || '';
+                document.getElementById('habit-area').value = habit.areaId || '';
+                document.getElementById('habit-reminder').value = habit.reminder || '';
+                
+                // Set frequency checkboxes
+                document.querySelectorAll('#habit-frequency input').forEach(checkbox => {
+                    const day = parseInt(checkbox.value);
+                    checkbox.checked = habit.frequency.includes(day);
+                });
+                
+                // Update modal title and button
+                document.getElementById('habit-modal-title').textContent = 'Edit Habit';
+                const saveBtn = document.getElementById('save-habit-btn');
+                saveBtn.textContent = 'Update Habit';
+                
+                // Store the habit ID
+                saveBtn.setAttribute('data-id', habitId);
+                
+                // Replace event listener
+                saveBtn.removeEventListener('click', handleSaveHabit);
+                saveBtn.addEventListener('click', handleUpdateHabit);
+                
+                openModal('habit-modal');
+            } catch (error) {
+                console.error('Error editing habit:', error);
+            }
+        }
+        
+        // Handle Save Habit
+        async function handleSaveHabit() {
+            const selectedDays = [];
+            document.querySelectorAll('#habit-frequency input:checked').forEach(checkbox => {
+                selectedDays.push(parseInt(checkbox.value));
+            });
+            
+            const habitData = {
+                name: document.getElementById('habit-name').value,
+                description: document.getElementById('habit-description').value,
+                areaId: parseInt(document.getElementById('habit-area').value) || null,
+                frequency: selectedDays,
+                reminder: document.getElementById('habit-reminder').value,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                status: 'active',
+                streak: 0,
+                totalCompleted: 0
+            };
+            
+            try {
+                await addData('habits', habitData);
+                closeModal('habit-modal');
+                loadHabits();
+                loadDashboardHabits();
+            } catch (error) {
+                console.error('Error saving habit:', error);
+            }
+        }
+        
+        // Handle Update Habit
+        async function handleUpdateHabit(e) {
+            const habitId = parseInt(e.target.getAttribute('data-id'));
+            
+            try {
+                const habit = await getData('habits', habitId);
+                
+                const selectedDays = [];
+                document.querySelectorAll('#habit-frequency input:checked').forEach(checkbox => {
+                    selectedDays.push(parseInt(checkbox.value));
+                });
+                
+                habit.name = document.getElementById('habit-name').value;
+                habit.description = document.getElementById('habit-description').value;
+                habit.areaId = parseInt(document.getElementById('habit-area').value) || null;
+                habit.frequency = selectedDays;
+                habit.reminder = document.getElementById('habit-reminder').value;
+                habit.updatedAt = new Date().toISOString();
+                
+                await updateData('habits', habit);
+                
+                // Reset the button to save new habits
+                const saveBtn = document.getElementById('save-habit-btn');
+                saveBtn.textContent = 'Save Habit';
+                saveBtn.removeAttribute('data-id');
+                saveBtn.removeEventListener('click', handleUpdateHabit);
+                saveBtn.addEventListener('click', handleSaveHabit);
+                
+                closeModal('habit-modal');
+                loadHabits();
+                loadDashboardHabits();
+            } catch (error) {
+                console.error('Error updating habit:', error);
+            }
+        }
+        
+        // Load Goals
+        async function loadGoals() {
+    try {
+        const goals = await getAllData('goals');
+        
+        // Sort by status and then by target date
+        goals.sort((a, b) => {
+            if (a.status !== b.status) {
+                return a.status === 'active' ? -1 : 1;
+            }
+            return new Date(a.targetDate) - new Date(b.targetDate);
+        });
+        
+        const currentGoals = goals.filter(g => g.status === 'active');
+        const achievedGoals = goals.filter(g => g.status === 'completed');
+        
+        // Populate current goals
+        populateGoalsList('current-goals-list', currentGoals);
+        
+        // Populate achieved goals
+        populateGoalsList('achieved-goals-list', achievedGoals);
+        
+        // Populate all goals
+        populateGoalsList('all-goals-list', goals);
+        
+    } catch (error) {
+        console.error('Error loading goals:', error);
+    }
+}
+
+
+async function populateGoalsList(containerId, goals) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    
+    if (goals.length === 0) {
+        container.innerHTML = '<p style="padding: 1rem; color: var(--gray);">No goals found.</p>';
+        return;
+    }
+    
+    for (const goal of goals) {
+        // Get related area
+        let areaName = 'No specific area';
+        if (goal.areaId) {
+            const area = await getData('areas', goal.areaId);
+            if (area) {
+                areaName = area.name;
+            }
+        }
+        
+        // Calculate days remaining
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const targetDate = new Date(goal.targetDate);
+        const daysRemaining = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+        
+        const goalCard = document.createElement('div');
+        goalCard.className = 'card';
+        goalCard.innerHTML = `
+            <div class="card-header">
+                <h3 class="card-title">${goal.name}</h3>
+                <div class="card-actions">
+                    <button class="btn btn-sm btn-outline edit-goal-btn" data-id="${goal.id}">Edit</button>
+                </div>
+            </div>
+            <div class="badge badge-primary">${areaName}</div>
+            <p style="margin-top: 1rem;">${goal.description || 'No description'}</p>
+            
+            <div class="progress-container" style="margin-top: 1.5rem;">
+                <div class="progress-bar" style="width: ${goal.progress}%"></div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">${goal.progress}%</div>
+                    <div class="stat-label">Progress</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">${daysRemaining > 0 ? daysRemaining : 'Due'}</div>
+                    <div class="stat-label">${daysRemaining > 0 ? 'Days Left' : 'Past Due'}</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">${new Date(goal.targetDate).toLocaleDateString()}</div>
+                    <div class="stat-label">Target Date</div>
+                </div>
+            </div>
+            
+            ${goal.measure ? `
+            <div style="margin-top: 1rem;">
+                <strong>Measure of Success:</strong>
+                <p>${goal.measure}</p>
+            </div>
+            ` : ''}
+            
+            ${goal.milestones ? `
+            <div style="margin-top: 1rem;">
+                <strong>Milestones:</strong>
+                <p>${goal.milestones}</p>
+            </div>
+            ` : ''}
+            
+            <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+                ${goal.status === 'active' ? `
+                    <button class="btn btn-sm btn-outline update-goal-progress-btn" data-id="${goal.id}">Update Progress</button>
+                    <button class="btn btn-sm btn-outline complete-goal-btn" data-id="${goal.id}">Mark Complete</button>
+                ` : `
+                    <button class="btn btn-sm btn-outline reactivate-goal-btn" data-id="${goal.id}">Reactivate</button>
+                `}
+            </div>
+        `;
+        
+        container.appendChild(goalCard);
+    }
+    
+    // Add event listeners
+    container.querySelectorAll('.edit-goal-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const goalId = parseInt(e.target.getAttribute('data-id'));
+            editGoal(goalId);
+        });
+    });
+    
+    container.querySelectorAll('.update-goal-progress-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const goalId = parseInt(e.target.getAttribute('data-id'));
+            updateGoalProgress(goalId);
+        });
+    });
+    
+    container.querySelectorAll('.complete-goal-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const goalId = parseInt(e.target.getAttribute('data-id'));
+            completeGoal(goalId);
+        });
+    });
+    
+    container.querySelectorAll('.reactivate-goal-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const goalId = parseInt(e.target.getAttribute('data-id'));
+            reactivateGoal(goalId);
+        });
+    });
+}
+
+// Edit Goal
+async function editGoal(goalId) {
+    try {
+        const goal = await getData('goals', goalId);
+        
+        // Load focus areas for select dropdown
+        await loadFocusAreasInSelect('goal-area');
+        
+        // Set form values
+        document.getElementById('goal-name').value = goal.name;
+        document.getElementById('goal-description').value = goal.description || '';
+        document.getElementById('goal-area').value = goal.areaId || '';
+        document.getElementById('goal-target').value = goal.targetDate;
+        document.getElementById('goal-measure').value = goal.measure || '';
+        document.getElementById('goal-milestones').value = goal.milestones || '';
+        
+        // Update modal title and button
+        document.getElementById('goal-modal-title').textContent = 'Edit Goal';
+        const saveBtn = document.getElementById('save-goal-btn');
+        saveBtn.textContent = 'Update Goal';
+        
+        // Store the goal ID
+        saveBtn.setAttribute('data-id', goalId);
+        
+        // Replace event listener
+        saveBtn.removeEventListener('click', handleSaveGoal);
+        saveBtn.addEventListener('click', handleUpdateGoal);
+        
+        openModal('goal-modal');
+    } catch (error) {
+        console.error('Error editing goal:', error);
+    }
+}
+
+// Handle Save Goal
+async function handleSaveGoal() {
+    const goalData = {
+        name: document.getElementById('goal-name').value,
+        description: document.getElementById('goal-description').value,
+        areaId: parseInt(document.getElementById('goal-area').value) || null,
+        targetDate: document.getElementById('goal-target').value,
+        measure: document.getElementById('goal-measure').value,
+        milestones: document.getElementById('goal-milestones').value,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        status: 'active',
+        progress: 0
+    };
+    
+    try {
+        await addData('goals', goalData);
+        closeModal('goal-modal');
+        loadGoals();
+    } catch (error) {
+        console.error('Error saving goal:', error);
+    }
+}
+
+// Handle Update Goal
+async function handleUpdateGoal(e) {
+    const goalId = parseInt(e.target.getAttribute('data-id'));
+    
+    try {
+        const goal = await getData('goals', goalId);
+        
+        goal.name = document.getElementById('goal-name').value;
+        goal.description = document.getElementById('goal-description').value;
+        goal.areaId = parseInt(document.getElementById('goal-area').value) || null;
+        goal.targetDate = document.getElementById('goal-target').value;
+        goal.measure = document.getElementById('goal-measure').value;
+        goal.milestones = document.getElementById('goal-milestones').value;
+        goal.updatedAt = new Date().toISOString();
+        
+        await updateData('goals', goal);
+        
+        // Reset the button to save new goals
+        const saveBtn = document.getElementById('save-goal-btn');
+        saveBtn.textContent = 'Save Goal';
+        saveBtn.removeAttribute('data-id');
+        saveBtn.removeEventListener('click', handleUpdateGoal);
+        saveBtn.addEventListener('click', handleSaveGoal);
+        
+        closeModal('goal-modal');
+        loadGoals();
+    } catch (error) {
+        console.error('Error updating goal:', error);
+    }
+}
+
+// Update Goal Progress
+async function updateGoalProgress(goalId) {
+    try {
+        const goal = await getData('goals', goalId);
+        
+        // Create a simple modal for progress update
+        const modal = document.createElement('div');
+        modal.className = 'modal open';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Update Goal Progress</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Current Progress: ${goal.progress}%</label>
+                        <input type="range" min="0" max="100" value="${goal.progress}" class="form-control" id="progress-slider">
+                        <p id="progress-value">${goal.progress}%</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="progress-notes">Notes (Optional)</label>
+                        <textarea id="progress-notes" class="form-control" placeholder="Any notes on your progress..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline modal-close-btn">Cancel</button>
+                    <button class="btn btn-primary" id="save-progress-btn">Save Progress</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        const slider = document.getElementById('progress-slider');
+        const valueDisplay = document.getElementById('progress-value');
+        
+        slider.addEventListener('input', () => {
+            valueDisplay.textContent = slider.value + '%';
+        });
+        
+        // Close handlers
+        modal.querySelector('.modal-close').addEventListener('click', () => {
+            document.body.removeChild(modal);
+        });
+        
+        modal.querySelector('.modal-close-btn').addEventListener('click', () => {
+            document.body.removeChild(modal);
+        });
+        
+        // Save progress
+        document.getElementById('save-progress-btn').addEventListener('click', async () => {
+            const newProgress = parseInt(slider.value);
+            const notes = document.getElementById('progress-notes').value;
+            
+            // Update goal
+            goal.progress = newProgress;
+            goal.updatedAt = new Date().toISOString();
+            
+            // If goal is complete
+            if (newProgress >= 100) {
+                goal.status = 'completed';
+            }
+            
+            await updateData('goals', goal);
+            
+            // Add progress log entry
+            const logEntry = {
+                goalId: goalId,
+                date: new Date().toISOString().split('T')[0],
+                progress: newProgress,
+                notes: notes,
+                createdAt: new Date().toISOString()
+            };
+            
+            await addData('goalProgress', logEntry);
+            
+            // Remove modal and refresh
+            document.body.removeChild(modal);
+            loadGoals();
+        });
+        
+        // Close when clicking outside
+        modal.addEventListener('click', event => {
+            if (event.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error updating goal progress:', error);
+    }
+}
+
+// Complete Goal
+async function completeGoal(goalId) {
+    try {
+        const goal = await getData('goals', goalId);
+        
+        goal.status = 'completed';
+        goal.progress = 100;
+        goal.updatedAt = new Date().toISOString();
+        
+        await updateData('goals', goal);
+        loadGoals();
+    } catch (error) {
+        console.error('Error completing goal:', error);
+    }
+}
+
+// Reactivate Goal
+async function reactivateGoal(goalId) {
+    try {
+        const goal = await getData('goals', goalId);
+        
+        goal.status = 'active';
+        goal.updatedAt = new Date().toISOString();
+        
+        await updateData('goals', goal);
+        loadGoals();
+    } catch (error) {
+        console.error('Error reactivating goal:', error);
+    }
+}
+        
+async function loadReflections() {
+try {
+const reflections = await getAllData('reflections');
+
+        // Sort by date, newest first
+        reflections.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        const container = document.getElementById('reflections-container');
+        container.innerHTML = '';
+        
+        if (reflections.length === 0) {
+            container.innerHTML = `
+                <div class="card" style="margin-top: 1rem;">
+                    <p style="padding: 1rem; color: var(--gray);">No journal entries yet. Start documenting your inner journey.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Group reflections by month
+        const groupedReflections = {};
+        
+        reflections.forEach(reflection => {
+            const date = new Date(reflection.date);
+            const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+            
+            if (!groupedReflections[monthYear]) {
+                groupedReflections[monthYear] = [];
+            }
+            
+            groupedReflections[monthYear].push(reflection);
+        });
+        
+        // Create sections for each month
+        for (const monthYear in groupedReflections) {
+            const monthSection = document.createElement('div');
+            monthSection.innerHTML = `<h3 style="margin: 1.5rem 0 1rem;">${monthYear}</h3>`;
+            container.appendChild(monthSection);
+            
+            // Add reflections for this month
+            groupedReflections[monthYear].forEach(reflection => {
+                const date = new Date(reflection.date);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+                
+                // Get areas
+                const areasPromises = reflection.areas ? reflection.areas.map(areaId => getData('areas', areaId)) : [];
+                
+                Promise.all(areasPromises).then(areas => {
+                    const areaNames = areas.filter(a => a).map(a => a.name);
+                    
+                    const reflectionCard = document.createElement('div');
+                    reflectionCard.className = 'card';
+                    reflectionCard.style.marginBottom = '1rem';
+                    reflectionCard.innerHTML = `
+                        <div class="card-header">
+                            <h3 class="card-title">${formattedDate}</h3>
+                            <div class="card-actions">
+                                <button class="btn btn-sm btn-outline edit-reflection-btn" data-id="${reflection.id}">Edit</button>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 0.5rem;">
+                            <span class="badge badge-primary">${getMoodEmoji(reflection.mood)} ${formatMood(reflection.mood)}</span>
+                            ${areaNames.map(name => `<span class="badge badge-secondary">${name}</span>`).join('')}
+                        </div>
+                        
+                        <div class="journal-content" style="margin-top: 1rem;">
+                            ${reflection.content.replace(/\n/g, '<br>')}
+                        </div>
+                        
+                        ${reflection.insights ? `
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(58, 123, 213, 0.05); border-radius: 8px;">
+                            <strong>Key Insights:</strong>
+                            <p>${reflection.insights}</p>
+                        </div>
+                        ` : ''}
+                    `;
+                    
+                    container.appendChild(reflectionCard);
+                    
+                    // Add event listener
+                    reflectionCard.querySelector('.edit-reflection-btn').addEventListener('click', () => {
+                        editReflection(reflection.id);
+                    });
+                });
+            });
+        }
+    } catch (error) {
+        console.error('Error loading reflections:', error);
+    }
+    }
+
+// Helper function to get mood emoji
+function getMoodEmoji(mood) {
+switch (mood) {
+case 'elevated': return '✨';
+case 'balanced': return '☯️';
+case 'challenged': return '🌱';
+case 'struggling': return '🌧️';
+case 'disconnected': return '🌫️';
+default: return '☯️';
+}
+}
+
+// Helper function to format mood
+function formatMood(mood) {
+return mood.split('-').map(word =>
+word.charAt(0).toUpperCase() + word.slice(1)
+).join(' ');
+}
+
+// Edit Reflection
+async function editReflection(reflectionId) {
+try {
+const reflection = await getData('reflections', reflectionId);
+
+        // Load focus areas for checkboxes
+        await loadFocusAreasCheckboxes('reflection-areas');
+        
+        // Set form values
+        document.getElementById('reflection-date').value = reflection.date;
+        document.getElementById('reflection-content').value = reflection.content;
+        document.getElementById('reflection-mood').value = reflection.mood;
+        document.getElementById('reflection-insights').value = reflection.insights || '';
+        
+        // Check appropriate area checkboxes
+        if (reflection.areas && reflection.areas.length > 0) {
+            document.querySelectorAll('#reflection-areas input').forEach(checkbox => {
+                if (reflection.areas.includes(parseInt(checkbox.value))) {
+                    checkbox.checked = true;
+                }
+            });
+        }
+        
+        // Update modal title and button
+        document.getElementById('reflection-modal-title').textContent = 'Edit Journal Entry';
+        const saveBtn = document.getElementById('save-reflection-btn');
+        saveBtn.textContent = 'Update Entry';
+        
+        // Store the reflection ID
+        saveBtn.setAttribute('data-id', reflectionId);
+        
+        // Replace event listener
+        saveBtn.removeEventListener('click', handleSaveReflection);
+        saveBtn.addEventListener('click', handleUpdateReflection);
+        
+        openModal('reflection-modal');
+    } catch (error) {
+        console.error('Error editing reflection:', error);
+    }
+    }
+
+// Handle Save Reflection
+async function handleSaveReflection() {
+const selectedAreas = [];
+document.querySelectorAll('\#reflection-areas input:checked').forEach(checkbox => {
+selectedAreas.push(parseInt(checkbox.value));
+});
+
+    const reflectionData = {
+        date: document.getElementById('reflection-date').value,
+        content: document.getElementById('reflection-content').value,
+        mood: document.getElementById('reflection-mood').value,
+        areas: selectedAreas,
+        insights: document.getElementById('reflection-insights').value,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+    };
+    
+    try {
+        await addData('reflections', reflectionData);
+        closeModal('reflection-modal');
+        loadReflections();
+        updateTodayReflection();
+    } catch (error) {
+        console.error('Error saving reflection:', error);
+    }
+    }
+
+// Handle Update Reflection
+async function handleUpdateReflection(e) {
+const reflectionId = parseInt(e.target.getAttribute('data-id'));
+
+    try {
+        const reflection = await getData('reflections', reflectionId);
+        
+        const selectedAreas = [];
+        document.querySelectorAll('#reflection-areas input:checked').forEach(checkbox => {
+            selectedAreas.push(parseInt(checkbox.value));
+        });
+        
+        reflection.date = document.getElementById('reflection-date').value;
+        reflection.content = document.getElementById('reflection-content').value;
+        reflection.mood = document.getElementById('reflection-mood').value;
+        reflection.areas = selectedAreas;
+        reflection.insights = document.getElementById('reflection-insights').value;
+        reflection.updatedAt = new Date().toISOString();
+        
+        await updateData('reflections', reflection);
+        
+        // Reset the button to save new reflection
+        const saveBtn = document.getElementById('save-reflection-btn');
+        saveBtn.textContent = 'Save Entry';
+        saveBtn.removeAttribute('data-id');
+        saveBtn.removeEventListener('click', handleUpdateReflection);
+        saveBtn.addEventListener('click', handleSaveReflection);
+        
+        closeModal('reflection-modal');
+        loadReflections();
+        updateTodayReflection();
+    } catch (error) {
+        console.error('Error updating reflection:', error);
+    }
+    }
+
+// Load Inspirations
+async function loadInspirations() {
+try {
+const inspirations = await getAllData('inspirations');
+
+        // Sort by creation date, newest first
+        inspirations.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        const container = document.getElementById('inspirations-container');
+        container.innerHTML = '';
+        
+        if (inspirations.length === 0) {
+            container.innerHTML = `
+                <div class="card">
+                    <p style="padding: 1rem; color: var(--gray);">No inspirations added yet. Add Quranic verses, hadith, or other inspirational texts to motivate your journey.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Group inspirations by type
+        const groupedInspirations = {
+            quran: [],
+            hadith: [],
+            quote: [],
+            personal: []
+        };
+        
+        inspirations.forEach(inspiration => {
+            if (groupedInspirations[inspiration.type]) {
+                groupedInspirations[inspiration.type].push(inspiration);
+            } else {
+                groupedInspirations.personal.push(inspiration);
+            }
+        });
+        
+        // Display inspirations by type
+        const typeLabels = {
+            quran: 'Quranic Ayat',
+            hadith: 'Hadith',
+            quote: 'Scholar Quotes',
+            personal: 'Personal Reflections'
+        };
+        
+        for (const type in groupedInspirations) {
+            if (groupedInspirations[type].length > 0) {
+                const typeSection = document.createElement('div');
+                typeSection.style.marginBottom = '2rem';
+                typeSection.innerHTML = `<h3>${typeLabels[type]}</h3>`;
+                container.appendChild(typeSection);
+                
+                const typeContainer = document.createElement('div');
+                typeContainer.className = 'dashboard-container';
+                typeSection.appendChild(typeContainer);
+                
+                // Add inspirations for this type
+                groupedInspirations[type].forEach(inspiration => {
+                    // Get related areas
+                    const areasPromises = inspiration.areas ? inspiration.areas.map(areaId => getData('areas', areaId)) : [];
+                    
+                    Promise.all(areasPromises).then(areas => {
+                        const areaNames = areas.filter(a => a).map(a => a.name);
+                        
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        
+                        let typeIcon = '';
+                        switch (inspiration.type) {
+                            case 'quran': typeIcon = '📖'; break;
+                            case 'hadith': typeIcon = '🌙'; break;
+                            case 'quote': typeIcon = '✏️'; break;
+                            case 'personal': typeIcon = '💭'; break;
+                        }
+                        
+                        card.innerHTML = `
+                            <div class="card-header">
+                                <h3 class="card-title">${typeIcon} ${inspiration.source}</h3>
+                                <div class="card-actions">
+                                    <button class="btn btn-sm btn-outline edit-inspiration-btn" data-id="${inspiration.id}">Edit</button>
+                                </div>
+                            </div>
+                            
+                            <div class="quote-text" style="margin-top: 1rem;">
+                                "${inspiration.content}"
+                            </div>
+                            
+                            <div style="margin-top: 1rem;">
+                                ${areaNames.map(name => `<span class="badge badge-primary">${name}</span>`).join('')}
+                            </div>
+                            
+                            ${inspiration.notes ? `
+                            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(0, 208, 132, 0.05); border-radius: 8px; font-size: 0.9rem;">
+                                <strong>Personal Notes:</strong>
+                                <p>${inspiration.notes}</p>
+                            </div>
+                            ` : ''}
+                        `;
+                        
+                        typeContainer.appendChild(card);
+                        
+                        // Add event listener
+                        card.querySelector('.edit-inspiration-btn').addEventListener('click', () => {
+                            editInspiration(inspiration.id);
+                        });
+                    });
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error loading inspirations:', error);
+    }
+    }
+
+// Edit Inspiration
+async function editInspiration(inspirationId) {
+try {
+const inspiration = await getData('inspirations', inspirationId);
+
+        // Load focus areas for checkboxes
+        await loadFocusAreasCheckboxes('inspiration-areas');
+        
+        // Set form values
+        document.getElementById('inspiration-type').value = inspiration.type;
+        document.getElementById('inspiration-content').value = inspiration.content;
+        document.getElementById('inspiration-source').value = inspiration.source || '';
+        document.getElementById('inspiration-notes').value = inspiration.notes || '';
+        
+        // Check appropriate area checkboxes
+        if (inspiration.areas && inspiration.areas.length > 0) {
+            document.querySelectorAll('#inspiration-areas input').forEach(checkbox => {
+                if (inspiration.areas.includes(parseInt(checkbox.value))) {
+                    checkbox.checked = true;
+                }
+            });
+        }
+        
+        // Update modal title and button
+        document.getElementById('inspiration-modal-title').textContent = 'Edit Inspiration';
+        const saveBtn = document.getElementById('save-inspiration-btn');
+        saveBtn.textContent = 'Update Inspiration';
+        
+        // Store the inspiration ID
+        saveBtn.setAttribute('data-id', inspirationId);
+        
+        // Replace event listener
+        saveBtn.removeEventListener('click', handleSaveInspiration);
+        saveBtn.addEventListener('click', handleUpdateInspiration);
+        
+        openModal('inspiration-modal');
+    } catch (error) {
+        console.error('Error editing inspiration:', error);
+    }
+    }
+
+// Handle Save Inspiration
+async function handleSaveInspiration() {
+const selectedAreas = [];
+document.querySelectorAll('\#inspiration-areas input:checked').forEach(checkbox => {
+selectedAreas.push(parseInt(checkbox.value));
+});
+
+    const inspirationData = {
+        type: document.getElementById('inspiration-type').value,
+        content: document.getElementById('inspiration-content').value,
+        source: document.getElementById('inspiration-source').value,
+        areas: selectedAreas,
+        notes: document.getElementById('inspiration-notes').value,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+    };
+    
+    try {
+        await addData('inspirations', inspirationData);
+        closeModal('inspiration-modal');
+        loadInspirations();
+    } catch (error) {
+        console.error('Error saving inspiration:', error);
+    }
+    }
+
+// Handle Update Inspiration
+async function handleUpdateInspiration(e) {
+const inspirationId = parseInt(e.target.getAttribute('data-id'));
+
+    try {
+        const inspiration = await getData('inspirations', inspirationId);
+        
+        const selectedAreas = [];
+        document.querySelectorAll('#inspiration-areas input:checked').forEach(checkbox => {
+            selectedAreas.push(parseInt(checkbox.value));
+        });
+        
+        inspiration.type = document.getElementById('inspiration-type').value;
+        inspiration.content = document.getElementById('inspiration-content').value;
+        inspiration.source = document.getElementById('inspiration-source').value;
+        inspiration.areas = selectedAreas;
+        inspiration.notes = document.getElementById('inspiration-notes').value;
+        inspiration.updatedAt = new Date().toISOString();
+        
+        await updateData('inspirations', inspiration);
+        
+        // Reset the button to save new inspiration
+        const saveBtn = document.getElementById('save-inspiration-btn');
+        saveBtn.textContent = 'Save Inspiration';
+        saveBtn.removeAttribute('data-id');
+        saveBtn.removeEventListener('click', handleUpdateInspiration);
+        saveBtn.addEventListener('click', handleSaveInspiration);
+        
+        closeModal('inspiration-modal');
+        loadInspirations();
+    } catch (error) {
+        console.error('Error updating inspiration:', error);
+    }
+    }
+// Load Analytics Page
+async function loadAnalytics() {
+    try {
+        // Render all charts
+        await renderHabitConsistencyChart();
+        await renderGoalProgressChart();
+        await renderAreaGrowthChart();
+        await renderMonthlyOverviewChart();
+    } catch (error) {
+        console.error('Error loading analytics:', error);
+    }
+}
+
+// Render Habit Consistency Chart
+async function renderHabitConsistencyChart() {
+    try {
+        const habits = await getAllData('habits');
+        const habitLogs = await getAllData('habitLogs');
+        
+        // Get active habits only
+        const activeHabits = habits.filter(h => h.status === 'active');
+        
+        if (activeHabits.length === 0) {
+            document.getElementById('habit-chart').innerHTML = '<p style="text-align: center; padding: 2rem;">No active habits to display.</p>';
+            return;
+        }
+        
+        // Calculate last 30 days
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const thirtyDaysAgo = new Date(today);
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        // Create data structure for chart
+        const habitData = {};
+        
+        activeHabits.forEach(habit => {
+            habitData[habit.id] = {
+                name: habit.name,
+                data: []
+            };
+            
+            // Check each of the last 30 days
+            for (let d = new Date(thirtyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
+                const dayOfWeek = d.getDay();
+                const dateStr = new Date(d).toISOString().split('T')[0];
+                
+                // Check if habit was scheduled for this day
+                if (habit.frequency.includes(dayOfWeek)) {
+                    // Check if habit was completed this day
+                    const completed = habitLogs.some(log => 
+                        log.habitId === habit.id && log.date.split('T')[0] === dateStr
+                    );
+                    
+                    habitData[habit.id].data.push({
+                        date: dateStr,
+                        completed: completed
+                    });
+                }
+            }
+        });
+        
+        // Generate HTML for chart
+        const chartContainer = document.getElementById('habit-chart');
+        chartContainer.innerHTML = '';
+        
+        // Create chart legend
+        const legend = document.createElement('div');
+        legend.style.display = 'flex';
+        legend.style.flexWrap = 'wrap';
+        legend.style.gap = '1rem';
+        legend.style.marginBottom = '1rem';
+        legend.style.justifyContent = 'center';
+        
+        Object.values(habitData).forEach((habit, index) => {
+            const legendItem = document.createElement('div');
+            legendItem.style.display = 'flex';
+            legendItem.style.alignItems = 'center';
+            legendItem.style.gap = '0.5rem';
+            
+            const colorBox = document.createElement('div');
+            colorBox.style.width = '12px';
+            colorBox.style.height = '12px';
+            colorBox.style.backgroundColor = getChartColor(index);
+            colorBox.style.borderRadius = '3px';
+            
+            legendItem.appendChild(colorBox);
+            legendItem.appendChild(document.createTextNode(habit.name));
+            legend.appendChild(legendItem);
+        });
+        
+        chartContainer.appendChild(legend);
+        
+        // Create chart
+        const chart = document.createElement('div');
+        chart.style.height = '200px';
+        chart.style.display = 'flex';
+        chart.style.justifyContent = 'space-between';
+        chart.style.alignItems = 'flex-end';
+        chart.style.borderBottom = '1px solid #ddd';
+        chart.style.borderLeft = '1px solid #ddd';
+        chart.style.position = 'relative';
+        chart.style.padding = '0 1rem 1rem 0';
+        chartContainer.appendChild(chart);
+        
+        // Get all unique dates
+        const allDates = new Set();
+        Object.values(habitData).forEach(habit => {
+            habit.data.forEach(day => allDates.add(day.date));
+        });
+        
+        const sortedDates = Array.from(allDates).sort();
+        
+        // Create x-axis labels
+        const xAxis = document.createElement('div');
+        xAxis.style.position = 'absolute';
+        xAxis.style.bottom = '-25px';
+        xAxis.style.left = '0';
+        xAxis.style.right = '0';
+        xAxis.style.display = 'flex';
+        xAxis.style.justifyContent = 'space-between';
+        
+        // Show only 5 dates for readability
+        const step = Math.ceil(sortedDates.length / 5);
+        for (let i = 0; i < sortedDates.length; i += step) {
+            if (i < sortedDates.length) {
+                const date = new Date(sortedDates[i]);
+                const label = document.createElement('div');
+                label.style.fontSize = '10px';
+                label.style.transform = 'rotate(-45deg)';
+                label.style.transformOrigin = 'top left';
+                label.textContent = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                xAxis.appendChild(label);
+            }
+        }
+        chart.appendChild(xAxis);
+        
+        // Create y-axis labels
+        const yAxis = document.createElement('div');
+        yAxis.style.position = 'absolute';
+        yAxis.style.left = '-30px';
+        yAxis.style.top = '0';
+        yAxis.style.bottom = '0';
+        yAxis.style.display = 'flex';
+        yAxis.style.flexDirection = 'column';
+        yAxis.style.justifyContent = 'space-between';
+        
+        for (let i = 100; i >= 0; i -= 25) {
+            const label = document.createElement('div');
+            label.style.fontSize = '10px';
+            label.textContent = i + '%';
+            yAxis.appendChild(label);
+        }
+        chart.appendChild(yAxis);
+        
+        // Create data series
+        Object.values(habitData).forEach((habit, index) => {
+            const series = document.createElement('div');
+            series.style.display = 'flex';
+            series.style.alignItems = 'flex-end';
+            series.style.height = '100%';
+            series.style.gap = '2px';
+            series.style.flex = '1';
+            
+            // Calculate completion rate for each week
+            const weeklyData = [];
+            for (let i = 0; i < sortedDates.length; i += 7) {
+                const weekDates = sortedDates.slice(i, i + 7);
+                let completed = 0;
+                let scheduled = 0;
+                
+                weekDates.forEach(date => {
+                    const dayData = habit.data.find(d => d.date === date);
+                    if (dayData) {
+                        scheduled++;
+                        if (dayData.completed) {
+                            completed++;
+                        }
+                    }
+                });
+                
+                const completionRate = scheduled > 0 ? (completed / scheduled) * 100 : 0;
+                weeklyData.push(completionRate);
+            }
+            
+            weeklyData.forEach(rate => {
+                const bar = document.createElement('div');
+                bar.style.width = `${100 / weeklyData.length}%`;
+                bar.style.height = `${rate}%`;
+                bar.style.backgroundColor = getChartColor(index);
+                bar.style.borderRadius = '3px 3px 0 0';
+                bar.title = `${habit.name}: ${Math.round(rate)}% completed`;
+                series.appendChild(bar);
+            });
+            
+            chart.appendChild(series);
+        });
+        
+    } catch (error) {
+        console.error('Error rendering habit consistency chart:', error);
+        document.getElementById('habit-chart').innerHTML = '<p style="text-align: center; color: var(--danger);">Error loading chart data.</p>';
+    }
+}
+
+// Render Goal Progress Chart
+async function renderGoalProgressChart() {
+    try {
+        const goals = await getAllData('goals');
+        
+        if (goals.length === 0) {
+            document.getElementById('goal-chart').innerHTML = '<p style="text-align: center; padding: 2rem;">No goals to display.</p>';
+            return;
+        }
+        
+        // Group goals by status
+        const activeGoals = goals.filter(g => g.status === 'active');
+        const completedGoals = goals.filter(g => g.status === 'completed');
+        
+        // Create chart
+        const chartContainer = document.getElementById('goal-chart');
+        chartContainer.innerHTML = '';
+        
+        const chart = document.createElement('div');
+        chart.style.display = 'flex';
+        chart.style.height = '200px';
+        chart.style.alignItems = 'center';
+        chart.style.justifyContent = 'center';
+        chart.style.gap = '2rem';
+        chartContainer.appendChild(chart);
+        
+        // Create doughnut chart for goals status
+        const statusChart = document.createElement('div');
+        statusChart.style.width = '150px';
+        statusChart.style.height = '150px';
+        statusChart.style.position = 'relative';
+        statusChart.style.borderRadius = '50%';
+        
+        const activePercentage = goals.length > 0 ? (activeGoals.length / goals.length) * 100 : 0;
+        const completedPercentage = goals.length > 0 ? (completedGoals.length / goals.length) * 100 : 0;
+        
+        statusChart.style.background = `conic-gradient(
+            var(--success) 0% ${completedPercentage}%, 
+            var(--primary) ${completedPercentage}% 100%
+        )`;
+        
+        const statusChartLabel = document.createElement('div');
+        statusChartLabel.style.position = 'absolute';
+        statusChartLabel.style.top = '50%';
+        statusChartLabel.style.left = '50%';
+        statusChartLabel.style.transform = 'translate(-50%, -50%)';
+        statusChartLabel.style.width = '70%';
+        statusChartLabel.style.height = '70%';
+        statusChartLabel.style.background = 'white';
+        statusChartLabel.style.borderRadius = '50%';
+        statusChartLabel.style.display = 'flex';
+        statusChartLabel.style.flexDirection = 'column';
+        statusChartLabel.style.alignItems = 'center';
+        statusChartLabel.style.justifyContent = 'center';
+        statusChartLabel.style.fontSize = '0.8rem';
+        statusChartLabel.style.fontWeight = 'bold';
+        statusChartLabel.innerHTML = `
+            <div>${goals.length}</div>
+            <div style="font-size: 0.6rem; font-weight: normal;">Total Goals</div>
+        `;
+        statusChart.appendChild(statusChartLabel);
+        
+        const statusLegend = document.createElement('div');
+        statusLegend.style.marginTop = '1rem';
+        statusLegend.style.display = 'flex';
+        statusLegend.style.flexDirection = 'column';
+        statusLegend.style.gap = '0.5rem';
+        statusLegend.style.fontSize = '0.8rem';
+        statusLegend.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 12px; height: 12px; background-color: var(--success); border-radius: 3px;"></div>
+                <div>Completed: ${completedGoals.length} (${Math.round(completedPercentage)}%)</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 12px; height: 12px; background-color: var(--primary); border-radius: 3px;"></div>
+                <div>Active: ${activeGoals.length} (${Math.round(activePercentage)}%)</div>
+            </div>
+        `;
+        
+        const statusChartContainer = document.createElement('div');
+        statusChartContainer.style.display = 'flex';
+        statusChartContainer.style.flexDirection = 'column';
+        statusChartContainer.style.alignItems = 'center';
+        statusChartContainer.appendChild(statusChart);
+        statusChartContainer.appendChild(statusLegend);
+        chart.appendChild(statusChartContainer);
+        
+        // Create progress chart for active goals
+        if (activeGoals.length > 0) {
+            const progressChart = document.createElement('div');
+            progressChart.style.flex = '1';
+            progressChart.style.height = '100%';
+            progressChart.style.display = 'flex';
+            progressChart.style.flexDirection = 'column';
+            progressChart.style.justifyContent = 'center';
+            progressChart.style.gap = '0.75rem';
+            
+            activeGoals.forEach(goal => {
+                const goalBar = document.createElement('div');
+                goalBar.style.display = 'flex';
+                goalBar.style.flexDirection = 'column';
+                goalBar.style.gap = '0.25rem';
+                
+                const goalLabel = document.createElement('div');
+                goalLabel.style.display = 'flex';
+                goalLabel.style.justifyContent = 'space-between';
+                goalLabel.style.fontSize = '0.8rem';
+                goalLabel.innerHTML = `
+                    <div>${goal.name}</div>
+                    <div>${goal.progress}%</div>
+                `;
+                
+                const goalProgress = document.createElement('div');
+                goalProgress.style.height = '8px';
+                goalProgress.style.background = '#edf2f7';
+                goalProgress.style.borderRadius = '4px';
+                goalProgress.style.overflow = 'hidden';
+                
+                const goalProgressBar = document.createElement('div');
+                goalProgressBar.style.height = '100%';
+                goalProgressBar.style.width = `${goal.progress}%`;
+                goalProgressBar.style.background = 'linear-gradient(90deg, var(--primary), var(--secondary))';
+                goalProgressBar.style.borderRadius = '4px';
+                
+                goalProgress.appendChild(goalProgressBar);
+                goalBar.appendChild(goalLabel);
+                goalBar.appendChild(goalProgress);
+                progressChart.appendChild(goalBar);
+            });
+            
+            chart.appendChild(progressChart);
+        }
+        
+    } catch (error) {
+        console.error('Error rendering goal progress chart:', error);
+        document.getElementById('goal-chart').innerHTML = '<p style="text-align: center; color: var(--danger);">Error loading chart data.</p>';
+    }
+}
+
+// Render Area Growth Chart
+async function renderAreaGrowthChart() {
+    try {
+        const areas = await getAllData('areas');
+        const habits = await getAllData('habits');
+        const goals = await getAllData('goals');
+        const habitLogs = await getAllData('habitLogs');
+        const reflections = await getAllData('reflections');
+        
+        if (areas.length === 0) {
+            document.getElementById('area-chart').innerHTML = '<p style="text-align: center; padding: 2rem;">No focus areas to display.</p>';
+            return;
+        }
+        
+        // Calculate growth scores for each area
+        const areaScores = [];
+        
+        for (const area of areas) {
+            // Get related habits
+            const areaHabits = habits.filter(h => h.areaId === area.id);
+            
+            // Get related goals
+            const areaGoals = goals.filter(g => g.areaId === area.id);
+            
+            // Get related reflections
+            const areaReflections = reflections.filter(r => 
+                r.areas && r.areas.includes(area.id)
+            );
+            
+            // Calculate habit consistency
+            let habitScore = 0;
+            if (areaHabits.length > 0) {
+                let totalCompletions = 0;
+                let totalOpportunities = 0;
+                
+                const today = new Date();
+                const thirtyDaysAgo = new Date(today);
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                
+                areaHabits.forEach(habit => {
+                    for (let d = new Date(thirtyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
+                        const dayOfWeek = d.getDay();
+                        const dateStr = new Date(d).toISOString().split('T')[0];
+                        
+                        // Check if habit was scheduled for this day
+                        if (habit.frequency.includes(dayOfWeek)) {
+                            totalOpportunities++;
+                            
+                            // Check if habit was completed this day
+                            const completed = habitLogs.some(log => 
+                                log.habitId === habit.id && log.date.split('T')[0] === dateStr
+                            );
+                            
+                            if (completed) {
+                                totalCompletions++;
+                            }
+                        }
+                    }
+                });
+                
+                habitScore = totalOpportunities > 0 ? (totalCompletions / totalOpportunities) * 100 : 0;
+            }
+            
+            // Calculate goal progress
+            let goalScore = 0;
+            if (areaGoals.length > 0) {
+                const totalProgress = areaGoals.reduce((sum, goal) => sum + goal.progress, 0);
+                goalScore = totalProgress / areaGoals.length;
+            }
+            
+            // Calculate reflection frequency
+            let reflectionScore = 0;
+            if (areaReflections.length > 0) {
+                // Max score for 10+ reflections in the last 30 days
+                reflectionScore = Math.min(areaReflections.length * 10, 100);
+            }
+            
+            // Calculate overall score - weighted average
+            const overallScore = (habitScore * 0.5) + (goalScore * 0.3) + (reflectionScore * 0.2);
+            
+            areaScores.push({
+                name: area.name,
+                score: Math.round(overallScore),
+                habitScore: Math.round(habitScore),
+                goalScore: Math.round(goalScore),
+                reflectionScore: Math.round(reflectionScore),
+                category: area.category
+            });
+        }
+        
+        // Sort areas by score (highest first)
+        areaScores.sort((a, b) => b.score - a.score);
+        
+        // Create chart
+        const chartContainer = document.getElementById('area-chart');
+        chartContainer.innerHTML = '';
+        
+        const chart = document.createElement('div');
+        chart.style.display = 'flex';
+        chart.style.flexDirection = 'column';
+        chart.style.gap = '1rem';
+        chart.style.height = '100%';
+        chart.style.overflowY = 'auto';
+        chart.style.padding = '0.5rem';
+        chartContainer.appendChild(chart);
+        
+        // Create area bars
+        areaScores.forEach(area => {
+            const areaBar = document.createElement('div');
+            areaBar.style.display = 'flex';
+            areaBar.style.flexDirection = 'column';
+            areaBar.style.gap = '0.25rem';
+            
+            const areaHeader = document.createElement('div');
+            areaHeader.style.display = 'flex';
+            areaHeader.style.justifyContent = 'space-between';
+            areaHeader.style.alignItems = 'center';
+            
+            const areaTitle = document.createElement('div');
+            areaTitle.style.fontWeight = '500';
+            areaTitle.textContent = area.name;
+            
+            const areaScoreDisplay = document.createElement('div');
+            areaScoreDisplay.style.display = 'flex';
+            areaScoreDisplay.style.alignItems = 'center';
+            areaScoreDisplay.style.gap = '0.5rem';
+            
+            const scoreNumber = document.createElement('div');
+            scoreNumber.style.fontWeight = 'bold';
+            scoreNumber.textContent = area.score;
+            
+            const scoreLabel = document.createElement('div');
+            scoreLabel.style.fontSize = '0.7rem';
+            scoreLabel.style.color = 'var(--gray)';
+            scoreLabel.textContent = 'Growth Score';
+            
+            areaScoreDisplay.appendChild(scoreNumber);
+            areaScoreDisplay.appendChild(scoreLabel);
+            
+            areaHeader.appendChild(areaTitle);
+            areaHeader.appendChild(areaScoreDisplay);
+            
+            const progressBar = document.createElement('div');
+            progressBar.style.height = '10px';
+            progressBar.style.background = '#edf2f7';
+            progressBar.style.borderRadius = '5px';
+            progressBar.style.overflow = 'hidden';
+            progressBar.style.position = 'relative';
+            
+            // Create segments for different score components
+            const habitSegment = document.createElement('div');
+            habitSegment.style.position = 'absolute';
+            habitSegment.style.height = '100%';
+            habitSegment.style.width = `${area.habitScore * 0.5}%`;
+            habitSegment.style.left = '0';
+            habitSegment.style.background = area.category === 'virtue' ? 'var(--secondary)' : 'var(--primary)';
+            habitSegment.style.opacity = '1';
+            habitSegment.title = `Habit Score: ${area.habitScore}%`;
+            
+            const goalSegment = document.createElement('div');
+            goalSegment.style.position = 'absolute';
+            goalSegment.style.height = '100%';
+            goalSegment.style.width = `${area.goalScore * 0.3}%`;
+            goalSegment.style.left = `${area.habitScore * 0.5}%`;
+            goalSegment.style.background = area.category === 'virtue' ? 'var(--secondary)' : 'var(--primary)';
+            goalSegment.style.opacity = '0.7';
+            goalSegment.title = `Goal Score: ${area.goalScore}%`;
+            
+            const reflectionSegment = document.createElement('div');
+            reflectionSegment.style.position = 'absolute';
+            reflectionSegment.style.height = '100%';
+            reflectionSegment.style.width = `${area.reflectionScore * 0.2}%`;
+            reflectionSegment.style.left = `${(area.habitScore * 0.5) + (area.goalScore * 0.3)}%`;
+            reflectionSegment.style.background = area.category === 'virtue' ? 'var(--secondary)' : 'var(--primary)';
+            reflectionSegment.style.opacity = '0.4';
+            reflectionSegment.title = `Reflection Score: ${area.reflectionScore}%`;
+            
+            progressBar.appendChild(habitSegment);
+            progressBar.appendChild(goalSegment);
+            progressBar.appendChild(reflectionSegment);
+            
+            const scoreDetails = document.createElement('div');
+            scoreDetails.style.display = 'flex';
+            scoreDetails.style.justifyContent = 'space-between';
+            scoreDetails.style.fontSize = '0.7rem';
+            scoreDetails.style.color = 'var(--gray)';
+            
+            scoreDetails.innerHTML = `
+                <div>Habits: ${area.habitScore}%</div>
+                <div>Goals: ${area.goalScore}%</div>
+                <div>Reflections: ${area.reflectionScore}%</div>
+            `;
+            
+            areaBar.appendChild(areaHeader);
+            areaBar.appendChild(progressBar);
+            areaBar.appendChild(scoreDetails);
+            chart.appendChild(areaBar);
+        });
+        
+    } catch (error) {
+        console.error('Error rendering area growth chart:', error);
+        document.getElementById('area-chart').innerHTML = '<p style="text-align: center; color: var(--danger);">Error loading chart data.</p>';
+    }
+}
+
+// Render Monthly Overview Chart
+async function renderMonthlyOverviewChart() {
+    try {
+        const habitLogs = await getAllData('habitLogs');
+        const reflections = await getAllData('reflections');
+        const goalProgress = await getAllData('goalProgress');
+        
+        if (habitLogs.length === 0 && reflections.length === 0 && goalProgress.length === 0) {
+            document.getElementById('overview-chart').innerHTML = '<p style="text-align: center; padding: 2rem;">No data to display yet.</p>';
+            return;
+        }
+        
+        // Get last 6 months
+        const today = new Date();
+        const months = [];
+        
+        for (let i = 5; i >= 0; i--) {
+            const monthDate = new Date(today);
+            monthDate.setMonth(today.getMonth() - i);
+            months.push({
+                month: monthDate.getMonth(),
+                year: monthDate.getFullYear(),
+                label: monthDate.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }),
+                habitCount: 0,
+                reflectionCount: 0,
+                goalProgressCount: 0
+            });
+        }
+        
+        // Count activities by month
+        habitLogs.forEach(log => {
+            const logDate = new Date(log.date);
+            const month = logDate.getMonth();
+            const year = logDate.getFullYear();
+            
+            const monthData = months.find(m => m.month === month && m.year === year);
+            if (monthData) {
+                monthData.habitCount++;
+            }
+        });
+        
+        reflections.forEach(reflection => {
+            const reflectionDate = new Date(reflection.date);
+            const month = reflectionDate.getMonth();
+            const year = reflectionDate.getFullYear();
+            
+            const monthData = months.find(m => m.month === month && m.year === year);
+            if (monthData) {
+                monthData.reflectionCount++;
+            }
+        });
+        
+        goalProgress.forEach(progress => {
+            const progressDate = new Date(progress.date);
+            const month = progressDate.getMonth();
+            const year = progressDate.getFullYear();
+            
+            const monthData = months.find(m => m.month === month && m.year === year);
+            if (monthData) {
+                monthData.goalProgressCount++;
+            }
+        });
+        
+        // Create chart
+        const chartContainer = document.getElementById('overview-chart');
+        chartContainer.innerHTML = '';
+        
+        const chart = document.createElement('div');
+        chart.style.height = '200px';
+        chart.style.display = 'flex';
+        chart.style.justifyContent = 'space-between';
+        chart.style.alignItems = 'flex-end';
+        chart.style.gap = '20px';
+        chart.style.padding = '1rem 0';
+        chart.style.marginTop = '1rem';
+        chart.style.position = 'relative';
+        chartContainer.appendChild(chart);
+        
+        // Add horizontal grid lines
+        for (let i = 0; i <= 5; i++) {
+            const gridLine = document.createElement('div');
+            gridLine.style.position = 'absolute';
+            gridLine.style.left = '0';
+            gridLine.style.right = '0';
+            gridLine.style.top = `${i * 20}%`;
+            gridLine.style.borderBottom = '1px dashed #edf2f7';
+            gridLine.style.zIndex = '1';
+            chart.appendChild(gridLine);
+        }
+        
+        // Find max value for scaling
+        const maxHabitCount = Math.max(...months.map(m => m.habitCount));
+        const maxReflectionCount = Math.max(...months.map(m => m.reflectionCount));
+        const maxGoalProgressCount = Math.max(...months.map(m => m.goalProgressCount));
+        const maxValue = Math.max(maxHabitCount, maxReflectionCount, maxGoalProgressCount, 10); // Min 10 for scale
+        
+        // Create bars for each month
+        months.forEach(month => {
+            const monthGroup = document.createElement('div');
+            monthGroup.style.display = 'flex';
+            monthGroup.style.flexDirection = 'column';
+            monthGroup.style.alignItems = 'center';
+            monthGroup.style.flex = '1';
+            monthGroup.style.height = '100%';
+            
+            const bars = document.createElement('div');
+            bars.style.display = 'flex';
+            bars.style.height = '80%';
+            bars.style.width = '100%';
+            bars.style.justifyContent = 'center';
+            bars.style.alignItems = 'flex-end';
+            bars.style.gap = '4px';
+            bars.style.position = 'relative';
+            bars.style.zIndex = '2';
+            
+            // Habit bar
+            const habitBar = document.createElement('div');
+            habitBar.style.width = '8px';
+            habitBar.style.height = `${(month.habitCount / maxValue) * 100}%`;
+            habitBar.style.backgroundColor = 'var(--primary)';
+            habitBar.style.borderRadius = '2px';
+            habitBar.title = `Habits: ${month.habitCount}`;
+            
+            // Reflection bar
+            const reflectionBar = document.createElement('div');
+            reflectionBar.style.width = '8px';
+            reflectionBar.style.height = `${(month.reflectionCount / maxValue) * 100}%`;
+            reflectionBar.style.backgroundColor = 'var(--secondary)';
+            reflectionBar.style.borderRadius = '2px';
+            reflectionBar.title = `Reflections: ${month.reflectionCount}`;
+            
+            // Goal Progress bar
+            const goalBar = document.createElement('div');
+            goalBar.style.width = '8px';
+            goalBar.style.height = `${(month.goalProgressCount / maxValue) * 100}%`;
+            goalBar.style.backgroundColor = 'var(--warning)';
+            goalBar.style.borderRadius = '2px';
+            goalBar.title = `Goal Updates: ${month.goalProgressCount}`;
+            
+            bars.appendChild(habitBar);
+            bars.appendChild(reflectionBar);
+            bars.appendChild(goalBar);
+            
+            const monthLabel = document.createElement('div');
+            monthLabel.style.marginTop = '0.5rem';
+            monthLabel.style.fontSize = '0.8rem';
+            monthLabel.style.color = 'var(--dark)';
+            monthLabel.textContent = month.label;
+            
+            monthGroup.appendChild(bars);
+            monthGroup.appendChild(monthLabel);
+            chart.appendChild(monthGroup);
+        });
+        
+        // Add legend
+        const legend = document.createElement('div');
+        legend.style.display = 'flex';
+        legend.style.justifyContent = 'center';
+        legend.style.gap = '1.5rem';
+        legend.style.marginTop = '1rem';
+        
+        const habitLegend = document.createElement('div');
+        habitLegend.style.display = 'flex';
+        habitLegend.style.alignItems = 'center';
+        habitLegend.style.gap = '0.5rem';
+        habitLegend.style.fontSize = '0.8rem';
+        
+        const habitColor = document.createElement('div');
+        habitColor.style.width = '12px';
+        habitColor.style.height = '12px';
+        habitColor.style.backgroundColor = 'var(--primary)';
+        habitColor.style.borderRadius = '3px';
+        
+        habitLegend.appendChild(habitColor);
+        habitLegend.appendChild(document.createTextNode('Habits'));
+        
+        const reflectionLegend = document.createElement('div');
+        reflectionLegend.style.display = 'flex';
+        reflectionLegend.style.alignItems = 'center';
+        reflectionLegend.style.gap = '0.5rem';
+        reflectionLegend.style.fontSize = '0.8rem';
+        
+        const reflectionColor = document.createElement('div');
+        reflectionColor.style.width = '12px';
+        reflectionColor.style.height = '12px';
+        reflectionColor.style.backgroundColor = 'var(--secondary)';
+        reflectionColor.style.borderRadius = '3px';
+        
+        reflectionLegend.appendChild(reflectionColor);
+        reflectionLegend.appendChild(document.createTextNode('Reflections'));
+        
+        const goalLegend = document.createElement('div');
+        goalLegend.style.display = 'flex';
+        goalLegend.style.alignItems = 'center';
+        goalLegend.style.gap = '0.5rem';
+        goalLegend.style.fontSize = '0.8rem';
+        
+        const goalColor = document.createElement('div');
+        goalColor.style.width = '12px';
+        goalColor.style.height = '12px';
+        goalColor.style.backgroundColor = 'var(--warning)';
+        goalColor.style.borderRadius = '3px';
+        
+        goalLegend.appendChild(goalColor);
+        goalLegend.appendChild(document.createTextNode('Goal Updates'));
+        
+        legend.appendChild(habitLegend);
+        legend.appendChild(reflectionLegend);
+        legend.appendChild(goalLegend);
+        
+        chartContainer.appendChild(legend);
+        
+    } catch (error) {
+        console.error('Error rendering monthly overview chart:', error);
+        document.getElementById('overview-chart').innerHTML = '<p style="text-align: center; color: var(--danger);">Error loading chart data.</p>';
+    }
+}
+
+// Helper function to get chart colors
+function getChartColor(index) {
+    const colors = [
+        '#3a7bd5', // primary
+        '#00d084', // secondary
+        '#f6ad55', // warning
+        '#6faae1', // primary-light
+        '#48bb78', // success
+        '#a0aec0', // gray
+        '#4c51bf', // indigo
+        '#805ad5', // purple
+        '#d53f8c', // pink
+        '#38b2ac', // teal
+    ];
+    
+    return colors[index % colors.length];
+}
+
+        
+        // Setup date display
+        function setupDateDisplay() {
+            const dateDisplay = document.getElementById('date-display');
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            dateDisplay.textContent = new Date().toLocaleDateString('en-US', options);
+        }
+        
+        // Setup mobile menu toggle
+        function setupMobileMenu() {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('open');
+            });
+            
+            // Close sidebar when clicking on main content on mobile
+            document.querySelector('main').addEventListener('click', () => {
+                if (sidebar.classList.contains('open') && window.innerWidth <= 768) {
+                    sidebar.classList.remove('open');
+                }
+            });
+        }
+        
+        // Demo data for initial setup
+        async function loadDemoData() {
+            try {
+                const areas = await getAllData('areas');
+                
+                // Only load demo data if no data exists
+                if (areas.length === 0) {
+                    // Demo areas
+                    const demoAreas = [
+                        {
+                            name: "Controlling Anger",
+                            description: "Working to respond with patience and understanding rather than anger",
+                            category: "vice",
+                            inspiration: "Those who spend both in prosperity and in adversity, who restrain their anger and pardon people; and Allah loves the doers of good. (Quran 3:134)",
+                            priority: "high",
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString()
+                        },
+                        {
+                            name: "Increasing Gratitude",
+                            description: "Cultivating appreciation for Allah's blessings and expressing thanks",
+                            category: "virtue",
+                            inspiration: "And [remember] when your Lord proclaimed, 'If you are grateful, I will surely increase you [in favor].' (Quran 14:7)",
+                            priority: "medium",
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString()
+                        },
+                        {
+                            name: "Improving Prayer Focus",
+                            description: "Enhancing khushu (concentration) in salah",
+                            category: "virtue",
+                            inspiration: "Successful indeed are the believers who are humble in their prayers. (Quran 23:1-2)",
+                            priority: "high",
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString()
+                        }
+                    ];
+                    
+                    // Add demo areas
+                    for (const area of demoAreas) {
+                        await addData('areas', area);
+                    }
+                    
+                    // Get the areas with their IDs
+                    const savedAreas = await getAllData('areas');
+                    
+                    // Demo habits
+                    const demoHabits = [
+    {
+        name: "Morning Adhkar",
+        description: "Recite morning remembrances after Fajr prayer",
+        areaId: savedAreas.find(a => a.name === "Increasing Gratitude").id,
+        frequency: [0, 1, 2, 3, 4, 5, 6], // Every day
+        reminder: "06:30",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        status: "active",
+        streak: 5,
+        totalCompleted: 12
+    },
+    {
+        name: "Breath Before Response",
+        description: "Take 3 deep breaths before responding when feeling angry",
+        areaId: savedAreas.find(a => a.name === "Controlling Anger").id,
+        frequency: [0, 1, 2, 3, 4, 5, 6], // Every day
+        reminder: "",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        status: "active",
+        streak: 2,
+        totalCompleted: 8
+    },
+    {
+        name: "Prepare for Prayer",
+        description: "Spend 5 minutes clearing mind before each salah",
+        areaId: savedAreas.find(a => a.name === "Improving Prayer Focus").id,
+        frequency: [0, 1, 2, 3, 4, 5, 6], // Every day
+        reminder: "",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        status: "active",
+        streak: 3,
+        totalCompleted: 15
+    }
+];
+                    
+                    // Add demo habits
+                    for (const habit of demoHabits) {
+                        await addData('habits', habit);
+                    }
+                    
+                    // Demo goals
+                    const demoGoals = [
+                        {
+                            name: "Complete Quran reading",
+                            description: "Finish reading the entire Quran with understanding",
+                            areaId: savedAreas.find(a => a.name === "Improving Prayer Focus").id,
+                            targetDate: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString().split('T'),
+                            measure: "Complete all 30 juz with basic understanding of meaning",
+                            milestones: "Juz 1-10, Juz 11-20, Juz 21-30",
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
+                            status: "active",
+                            progress: 15
+                        },
+                        {
+                            name: "Express gratitude daily",
+                            description: "Verbally express gratitude to at least one person each day",
+                            areaId: savedAreas.find(a => a.name === "Increasing Gratitude").id,
+                            targetDate: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString().split('T'),
+                            measure: "30 days of consistent gratitude expression",
+                            milestones: "Family members, Friends, Colleagues, Strangers",
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
+                            status: "active",
+                            progress: 40
+                        }
+                    ];
+                    
+                    // Add demo goals
+                    for (const goal of demoGoals) {
+                        await addData('goals', goal);
+                    }
+                    
+                    // Get saved habits
+                    const savedHabits = await getAllData('habits');
+                    
+                    // Create some habit logs for the past week
+                    const today = new Date();
+                    for (let i = 0; i < 7; i++) {
+                        const date = new Date(today);
+                        date.setDate(date.getDate() - i);
+                        const dateStr = date.toISOString().split('T');
+                        
+                        // Randomly complete some habits
+                        for (const habit of savedHabits) {
+                            if (Math.random() > 0.3) { // 70% chance of completion
+                                const logData = {
+                                    habitId: habit.id,
+                                    date: dateStr,
+                                    createdAt: new Date().toISOString()
+                                };
+                                await addData('habitLogs', logData);
+                            }
+                        }
+                    }
+                    
+                    // Demo reflections
+                    const demoReflections = [
+                        {
+                            date: new Date().toISOString().split('T'),
+                            content: "Today I struggled with patience during my morning commute, but I remembered to recite 'Astaghfirullah' and took deep breaths. I'll continue working on this tomorrow.",
+                            mood: "balanced",
+                            areas: [savedAreas.find(a => a.name === "Controlling Anger").id],
+                            insights: "I noticed anger rises quickly but can be managed with conscious effort.",
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString()
+                        },
+                        {
+                            date: new Date(today.setDate(today.getDate() - 1)).toISOString().split('T'),
+                            content: "Alhamdulillah, I felt more present in my prayers today. Taking time to prepare before salah made a noticeable difference in my focus.",
+                            mood: "elevated",
+                            areas: [savedAreas.find(a => a.name === "Improving Prayer Focus").id],
+                            insights: "Preparation is key to achieving khushu in prayer.",
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString()
+                        }
+                    ];
+                    
+                    // Add demo reflections
+                    for (const reflection of demoReflections) {
+                        await addData('reflections', reflection);
+                    }
+                    
+                    // Demo inspirations
+                    const demoInspirations = [
+                        {
+                            type: "quran",
+                            content: "And when My servants ask you concerning Me - indeed I am near. I respond to the invocation of the supplicant when he calls upon Me.",
+                            source: "Surah Al-Baqarah 2:186",
+                            areas: [savedAreas.find(a => a.name === "Improving Prayer Focus").id],
+                            notes: "This verse reminds me that Allah is always listening. I should approach prayer with confidence that I'm being heard.",
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString()
+                        },
+                        {
+                            type: "hadith",
+                            content: "The strong person is not the one who can wrestle someone else down. The strong person is the one who can control himself when he is angry.",
+                            source: "Sahih Al-Bukhari",
+                            areas: [savedAreas.find(a => a.name === "Controlling Anger").id],
+                            notes: "True strength comes from self-control, not from dominating others.",
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString()
+                        }
+                    ];
+                    
+                    // Add demo inspirations
+                    for (const inspiration of demoInspirations) {
+                        await addData('inspirations', inspiration);
+                    }
+                    
+                    console.log("Demo data loaded successfully");
+                }
+            } catch (error) {
+                console.error("Error loading demo data:", error);
+            }
+        }
+        
+        // Initialize the application
+        async function initApp() {
+		
+            try {
+                // Setup IndexedDB
+                await initDB();
+                
+                // Load demo data if needed
+                await loadDemoData();
+                
+                // Setup UI
+                setupNavigation();
+                setupTabs();
+                setupModals();
+                setupFormHandlers();
+                setupDateDisplay();
+                setupMobileMenu();
+                
+                // Load initial data
+                await loadDashboard();
+                await loadFocusAreas();
+                await loadHabits();
+        await loadGoals();
+        await loadReflections();
+        await loadInspirations();
+        
+        // Load analytics when the page is navigated to
+        document.querySelector('.nav-item[data-page="analytics"]').addEventListener('click', loadAnalytics);
+                
+                console.log("Application initialized successfully");
+            } catch (error) {
+                console.error("Error initializing application:", error);
+            }
+			await loadGoals();
+        }
+        
+        // Start the application
+        document.addEventListener('DOMContentLoaded', initApp);
+		document.querySelector('#area-chart').parentElement.style.display = 'none';
+
+    </script>
+    </body>
+</html>

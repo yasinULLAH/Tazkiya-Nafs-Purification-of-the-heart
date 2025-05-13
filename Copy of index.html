@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PureHeart Path</title>
+    <!-- Author: Yasin Ullah, Pakistani -->
+    <meta name="author" content="Yasin Ullah, Pakistani">
+    <meta name="description" content="PureHeart Path: A client-side tool for setting and tracking goals related to Tazkiyah an-Nafs (purification of the self).">
+
+    <style>
+        /* --- CSS Variables for Theming --- */
+        :root {
+            --color-bg-dark: #1c2e4a; /* Deep Blue */
+            --color-bg-light: #e0f2f7; /* Light Cyan */
+            --color-primary: #4a90e2; /* Bright Blue */
+            --color-secondary: #50e3c2; /* Teal */
+            --color-accent: #f5a623; /* Orange */
+            --color-text: #e0f2f7; /* Light text on dark background */
+            --color-text-dark: #1c2e4a; /* Dark text on light background */
+            --color-card-bg: #2a3b5a; /* Slightly lighter dark blue */
+            --color-border: #4a90e2;
+            --color-success: #7ed321; /* Green */
+            --color-warning: #f8e71c; /* Yellow */
+            --color-danger: #d0021b; /* Red */
+            --color-progress-done: var(--color-secondary);
+            --color-progress-missed: #e0e0e0; /* Light grey */
+            --font-family-primary: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            --border-radius: 8px;
+            --spacing-unit: 16px;
+            --header-height: 60px;
+        }
+
+        /* --- Base Styles --- */
+        body {
+            font-family: var(--font-family-primary);
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--color-bg-dark) 0%, #0f1a2a 100%); /* Growth-inspired gradient */
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* Allow scrolling on body */
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--color-secondary);
+            margin-top: 0;
+        }
+
+        button {
+            font-family: inherit;
+            padding: calc(var(--spacing-unit) / 2) var(--spacing-unit);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            background-color: var(--color-primary);
+            color: var(--color-text);
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3a7bd5; /* Darker primary */
+        }
+
+        button:disabled {
+            background-color: #5a6e8a;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            font-family: inherit;
+            padding: calc(var(--spacing-unit) / 2);
+            margin-bottom: var(--spacing-unit);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            background-color: var(--color-card-bg);
+            color: var(--color-text);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]::placeholder,
+        textarea::placeholder {
+            color: #a0a0a0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: calc(var(--spacing-unit) / 4);
+            font-weight: bold;
+            color: var(--color-secondary);
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: var(--spacing-unit);
+            width: 100%;
+            flex-grow: 1; /* Allow container to grow */
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: rgba(0, 0, 0, 0.2); /* Semi-transparent */
+            color: var(--color-text);
+            padding: 0 var(--spacing-unit);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: var(--header-height);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0; /* Prevent header from shrinking */
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8em;
+            color: var(--color-secondary);
+        }
+
+        /* --- Navigation --- */
+        nav {
+            background-color: var(--color-card-bg);
+            padding: var(--spacing-unit) 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin-bottom: var(--spacing-unit);
+            flex-shrink: 0; /* Prevent nav from shrinking */
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-unit);
+            padding: 0 var(--spacing-unit); /* Add padding to nav container */
+        }
+
+        nav button {
+            background: none;
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+            padding: calc(var(--spacing-unit) / 2) var(--spacing-unit);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        nav button.active {
+            background-color: var(--color-primary);
+            color: var(--color-text);
+        }
+
+        nav button:hover:not(.active) {
+            background-color: rgba(74, 144, 226, 0.1); /* Light hover effect */
+        }
+
+        /* --- Main Content Area --- */
+        main {
+            flex-grow: 1; /* Allow main content to grow */
+            padding-top: var(--spacing-unit); /* Add space below nav */
+            padding-bottom: var(--spacing-unit);
+        }
+
+        .view {
+            display: none; /* Hide all views by default */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Card Styles --- */
+        .card {
+            background-color: var(--color-card-bg);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-unit);
+            margin-bottom: var(--spacing-unit);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--color-border);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--color-primary);
+        }
+
+        .card-actions {
+            margin-top: var(--spacing-unit);
+            display: flex;
+            gap: calc(var(--spacing-unit) / 2);
+        }
+
+        .card-actions button {
+            padding: calc(var(--spacing-unit) / 4) calc(var(--spacing-unit) / 2);
+            font-size: 0.9em;
+        }
+
+        .card-actions button.delete {
+            background-color: var(--color-danger);
+        }
+        .card-actions button.delete:hover {
+             background-color: #b00217;
+        }
+
+
+        /* --- List Styles --- */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            background-color: rgba(0, 0, 0, 0.1); /* Subtle background */
+            padding: calc(var(--spacing-unit) / 2);
+            margin-bottom: calc(var(--spacing-unit) / 2);
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--color-secondary); /* Growth line */
+        }
+
+        li .item-details {
+            flex-grow: 1;
+            margin-right: var(--spacing-unit);
+        }
+
+        li .item-actions {
+            display: flex;
+            gap: calc(var(--spacing-unit) / 4);
+        }
+
+        li .item-actions button {
+            padding: calc(var(--spacing-unit) / 4) calc(var(--spacing-unit) / 2);
+            font-size: 0.8em;
+        }
+
+        /* --- Modal Styles --- */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 100; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
+            backdrop-filter: blur(5px); /* Subtle blur */
+            justify-content: center;
+            align-items: center;
+            padding: var(--spacing-unit);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--color-card-bg);
+            padding: var(--spacing-unit);
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-button {
+            position: absolute;
+            top: calc(var(--spacing-unit) / 2);
+            right: calc(var(--spacing-unit) / 2);
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--color-danger);
+            text-decoration: none;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-unit);
+            margin-top: var(--spacing-unit);
+        }
+
+        .modal-buttons button {
+            min-width: 80px;
+        }
+
+        /* --- Specific View Styles --- */
+
+        /* Dashboard */
+        #dashboard-view .dashboard-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-unit);
+            margin-bottom: var(--spacing-unit);
+        }
+
+        #dashboard-view .summary-card {
+            background-color: rgba(var(--color-primary), 0.1); /* Lighter primary */
+            padding: var(--spacing-unit);
+            border-radius: var(--border-radius);
+            text-align: center;
+            border: 1px solid var(--color-primary);
+        }
+
+        #dashboard-view .summary-card h4 {
+            margin-bottom: calc(var(--spacing-unit) / 2);
+            color: var(--color-primary);
+        }
+
+        #dashboard-view .summary-card p {
+            margin: 0;
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--color-secondary);
+        }
+
+        #dashboard-view .recent-activity ul li {
+             border-left-color: var(--color-accent);
+        }
+
+
+        /* Areas View */
+        #areas-view .area-list .card {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        #areas-view .area-list .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Area Detail View */
+        #area-detail-view h2 {
+            color: var(--color-secondary);
+            margin-bottom: var(--spacing-unit);
+        }
+
+        #area-detail-view .item-section h3 {
+            margin-top: var(--spacing-unit);
+            margin-bottom: calc(var(--spacing-unit) / 2);
+            color: var(--color-primary);
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: calc(var(--spacing-unit) / 4);
+        }
+
+        #area-detail-view .add-button {
+            margin-bottom: var(--spacing-unit);
+            display: inline-block;
+        }
+
+        /* Tracking/Logs */
+        .log-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: calc(var(--spacing-unit) / 2);
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-entry .log-date {
+            font-weight: bold;
+            color: var(--color-secondary);
+            min-width: 100px;
+        }
+        .log-entry .log-status {
+             font-style: italic;
+             color: #ccc;
+        }
+        .log-entry .log-notes {
+            flex-grow: 1;
+            margin: 0 var(--spacing-unit);
+        }
+
+        .log-entry .log-actions button {
+             padding: 2px 6px;
+             font-size: 0.7em;
+        }
+
+        /* Progress Visualization (Simple) */
+        .progress-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr); /* 7 days */
+            gap: 4px;
+            margin-top: var(--spacing-unit);
+            padding: calc(var(--spacing-unit) / 2);
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        .progress-day {
+            width: 100%;
+            padding-top: 100%; /* Make it square */
+            position: relative;
+            border-radius: 4px;
+            background-color: var(--color-progress-missed);
+            transition: background-color 0.3s ease;
+        }
+
+        .progress-day.done {
+            background-color: var(--color-progress-done);
+        }
+         .progress-day.partial {
+            background-color: var(--color-warning);
+        }
+         .progress-day.skipped {
+            background-color: var(--color-danger);
+        }
+
+        .progress-day span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.7em;
+            color: var(--color-text-dark); /* Dark text on colored background */
+            font-weight: bold;
+        }
+         .progress-day.done span,
+         .progress-day.partial span,
+         .progress-day.skipped span {
+             color: var(--color-text-dark); /* Ensure visibility */
+         }
+
+
+        /* Journal View */
+        #journal-view .journal-entry {
+            border-left-color: var(--color-accent);
+        }
+        #journal-view .journal-entry h4 {
+            margin-bottom: calc(var(--spacing-unit) / 4);
+            color: var(--color-accent);
+        }
+        #journal-view .journal-entry p {
+            margin-bottom: calc(var(--spacing-unit) / 2);
+            white-space: pre-wrap; /* Preserve line breaks */
+        }
+
+
+        /* Data View (Backup/Restore) */
+        #data-view .card p {
+            margin-bottom: var(--spacing-unit);
+        }
+        #data-view .card input[type="file"] {
+            margin-bottom: var(--spacing-unit);
+            display: block;
+            background: none;
+            border: none;
+            color: var(--color-text);
+        }
+
+        /* Motivation */
+         .motivation-list li {
+             border-left-color: var(--color-warning);
+         }
+         .motivation-list li .item-details {
+             font-style: italic;
+         }
+         .motivation-list li .item-details strong {
+             font-style: normal;
+             color: var(--color-secondary);
+             margin-right: 5px;
+         }
+
+
+        /* --- Utility Classes --- */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-space {
+            margin-bottom: var(--spacing-unit);
+        }
+
+        .mt-space {
+            margin-top: var(--spacing-unit);
+        }
+
+        .flex-end {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.5em;
+            }
+
+            nav .container {
+                flex-direction: column;
+                gap: calc(var(--spacing-unit) / 2);
+            }
+
+            nav button {
+                width: 100%;
+                text-align: center;
+            }
+
+            .container {
+                padding: calc(var(--spacing-unit) / 2);
+            }
+
+            .card {
+                padding: calc(var(--spacing-unit) / 1.5);
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+
+             #dashboard-view .dashboard-summary {
+                grid-template-columns: 1fr;
+             }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>PureHeart Path</h1>
+        <!-- Author: Yasin Ullah, Pakistani -->
+        <small style="color: rgba(255,255,255,0.5);">by Yasin Ullah</small>
+    </header>
+
+    <nav>
+        <div class="container">
+            <button data-view="dashboard-view" class="nav-button active">Dashboard</button>
+            <button data-view="areas-view" class="nav-button">Areas</button>
+            <button data-view="journal-view" class="nav-button">Journal</button>
+            <button data-view="data-view" class="nav-button">Data</button>
+        </div>
+    </nav>
+
+    <main id="app-content">
+        <div class="container">
+
+            <!-- Dashboard View -->
+            <section id="dashboard-view" class="view active">
+                <h2>Dashboard</h2>
+                <div class="dashboard-summary">
+                    <div class="summary-card">
+                        <h4>Active Areas</h4>
+                        <p id="summary-areas-count">-</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Goals Set</h4>
+                        <p id="summary-goals-count">-</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Habits Tracked</h4>
+                        <p id="summary-habits-count">-</p>
+                    </div>
+                </div>
+
+                <div class="card recent-activity">
+                    <h3>Recent Activity & Reflections</h3>
+                    <ul id="recent-logs-list">
+                        <!-- Recent logs/journal entries will be loaded here -->
+                        <li class="text-center">Loading...</li>
+                    </ul>
+                </div>
+
+                 <div class="card">
+                     <h3>Motivation</h3>
+                     <ul id="dashboard-motivation-list">
+                         <!-- Random motivation will be loaded here -->
+                          <li class="text-center">Loading...</li>
+                     </ul>
+                 </div>
+
+            </section>
+
+            <!-- Areas View -->
+            <section id="areas-view" class="view">
+                <h2>Areas of Focus</h2>
+                <button id="add-area-button" class="mb-space">+ Add New Area</button>
+                <div id="areas-list" class="area-list">
+                    <!-- Areas will be loaded here -->
+                    <p class="text-center">Loading areas...</p>
+                </div>
+            </section>
+
+            <!-- Area Detail View -->
+            <section id="area-detail-view" class="view">
+                 <button id="back-to-areas" class="mb-space">← Back to Areas</button>
+                 <h2 id="area-detail-name"></h2>
+                 <p id="area-detail-description"></p>
+
+                 <div class="card item-section">
+                     <h3>Goals</h3>
+                     <button id="add-goal-button" data-item-type="goal" class="add-button">+ Add Goal</button>
+                     <ul id="area-goals-list">
+                         <!-- Goals for this area will be loaded here -->
+                         <li class="text-center">No goals yet.</li>
+                     </ul>
+                 </div>
+
+                 <div class="card item-section">
+                     <h3>Habits</h3>
+                     <button id="add-habit-button" data-item-type="habit" class="add-button">+ Add Habit</button>
+                     <ul id="area-habits-list">
+                         <!-- Habits for this area will be loaded here -->
+                         <li class="text-center">No habits yet.</li>
+                     </ul>
+                 </div>
+
+                 <div class="card item-section">
+                     <h3>Motivation for this Area</h3>
+                     <button id="add-motivation-button" class="add-button">+ Add Motivation</button>
+                     <ul id="area-motivation-list" class="motivation-list">
+                         <!-- Motivation for this area will be loaded here -->
+                         <li class="text-center">No motivation added yet.</li>
+                     </ul>
+                 </div>
+
+                 <div class="card item-section">
+                     <h3>Tracking & Logs</h3>
+                     <div id="area-logs-summary">
+                         <!-- Log summaries/visualizations per item will go here -->
+                         <p class="text-center">Select an item to see logs.</p>
+                     </div>
+                 </div>
+
+            </section>
+
+            <!-- Journal View -->
+            <section id="journal-view" class="view">
+                 <h2>Journal</h2>
+                 <button id="add-journal-button" class="mb-space">+ Add Journal Entry</button>
+                 <div id="journal-list">
+                     <!-- Journal entries will be loaded here -->
+                      <p class="text-center">Loading journal...</p>
+                 </div>
+            </section>
+
+            <!-- Data View (Backup/Restore) -->
+            <section id="data-view" class="view">
+                <h2>Data Management</h2>
+                <div class="card">
+                    <h3>Backup Data</h3>
+                    <p>Export all your PureHeart Path data as a JSON file.</p>
+                    <button id="export-data-button">Export Data</button>
+                </div>
+                <div class="card">
+                    <h3>Restore Data</h3>
+                    <p>Import data from a previously exported JSON file. This will replace your current data.</p>
+                    <input type="file" id="import-file-input" accept=".json">
+                    <button id="import-data-button" disabled>Import Data</button>
+                    <p id="import-status" style="color: var(--color-warning); margin-top: var(--spacing-unit);"></p>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- --- Modals --- -->
+
+    <!-- Add/Edit Area Modal -->
+    <div id="area-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">×</span>
+            <h3 id="area-modal-title">Add New Area</h3>
+            <input type="hidden" id="area-id">
+            <label for="area-name">Area Name:</label>
+            <input type="text" id="area-name" required>
+            <label for="area-description">Description:</label>
+            <textarea id="area-description"></textarea>
+            <div class="modal-buttons">
+                <button class="close-modal">Cancel</button>
+                <button id="save-area-button">Save Area</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Item Modal (Goal/Habit) -->
+    <div id="item-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">×</span>
+            <h3 id="item-modal-title">Add New Item</h3>
+            <input type="hidden" id="item-id">
+            <input type="hidden" id="item-area-id">
+            <input type="hidden" id="item-type"> <!-- 'goal' or 'habit' -->
+
+            <label for="item-description">Description:</label>
+            <input type="text" id="item-description" required>
+
+            <div id="goal-fields" class="hidden">
+                <label for="goal-target">Target (e.g., 'Read 1 Juz', 'Give $100'):</label>
+                <input type="text" id="goal-target">
+                <label for="goal-frequency">Frequency (e.g., 'Weekly', 'Monthly', 'Once'):</label>
+                 <input type="text" id="goal-frequency">
+            </div>
+
+            <div id="habit-fields" class="hidden">
+                <label for="habit-frequency">Frequency (e.g., 'Daily', 'Weekly', '3 times/week'):</label>
+                <input type="text" id="habit-frequency">
+            </div>
+
+            <div class="modal-buttons">
+                <button class="close-modal">Cancel</button>
+                <button id="save-item-button">Save Item</button>
+            </div>
+        </div>
+    </div>
+
+     <!-- Add/Edit Motivation Modal -->
+     <div id="motivation-modal" class="modal">
+         <div class="modal-content">
+             <span class="close-button">×</span>
+             <h3 id="motivation-modal-title">Add New Motivation</h3>
+             <input type="hidden" id="motivation-id">
+             <input type="hidden" id="motivation-area-id">
+             <input type="hidden" id="motivation-item-id"> <!-- Optional -->
+
+             <label for="motivation-text">Text (Ayah, Hadith, Quote):</label>
+             <textarea id="motivation-text" required rows="4"></textarea>
+
+             <label for="motivation-source">Source (e.g., Quran 2:153, Bukhari #XYZ):</label>
+             <input type="text" id="motivation-source">
+
+             <div class="modal-buttons">
+                 <button class="close-modal">Cancel</button>
+                 <button id="save-motivation-button">Save Motivation</button>
+             </div>
+         </div>
+     </div>
+
+     <!-- Add/Edit Journal Modal -->
+     <div id="journal-modal" class="modal">
+         <div class="modal-content">
+             <span class="close-button">×</span>
+             <h3 id="journal-modal-title">Add Journal Entry</h3>
+             <input type="hidden" id="journal-id">
+
+             <label for="journal-date">Date:</label>
+             <input type="date" id="journal-date" required>
+
+             <label for="journal-entry">Entry:</label>
+             <textarea id="journal-entry" required rows="8"></textarea>
+
+             <div class="modal-buttons">
+                 <button class="close-modal">Cancel</button>
+                 <button id="save-journal-button">Save Entry</button>
+             </div>
+         </div>
+     </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">×</span>
+            <h3>Confirm Deletion</h3>
+            <p id="confirm-message">Are you sure you want to delete this item?</p>
+            <input type="hidden" id="confirm-id">
+            <input type="hidden" id="confirm-type"> <!-- e.g., 'area', 'item', 'journal', 'motivation' -->
+            <div class="modal-buttons">
+                <button class="close-modal">Cancel</button>
+                <button id="confirm-delete-button" class="delete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Habit Modal -->
+     <div id="log-habit-modal" class="modal">
+         <div class="modal-content">
+             <span class="close-button">×</span>
+             <h3>Log Habit</h3>
+             <input type="hidden" id="log-habit-item-id">
+             <p>Habit: <strong id="log-habit-description"></strong></p>
+             <label for="log-habit-date">Date:</label>
+             <input type="date" id="log-habit-date" required>
+             <label for="log-habit-status">Status:</label>
+             <select id="log-habit-status" required>
+                 <option value="done">Done</option>
+                 <option value="partial">Partial</option>
+                 <option value="skipped">Skipped</option>
+             </select>
+             <label for="log-habit-notes">Notes (Optional):</label>
+             <textarea id="log-habit-notes"></textarea>
+             <div class="modal-buttons">
+                 <button class="close-modal">Cancel</button>
+                 <button id="save-habit-log-button">Save Log</button>
+             </div>
+         </div>
+     </div>
+
+     <!-- Log Goal Modal -->
+     <div id="log-goal-modal" class="modal">
+         <div class="modal-content">
+             <span class="close-button">×</span>
+             <h3>Log Goal Progress</h3>
+             <input type="hidden" id="log-goal-item-id">
+             <p>Goal: <strong id="log-goal-description"></strong></p>
+             <label for="log-goal-date">Date:</label>
+             <input type="date" id="log-goal-date" required>
+             <label for="log-goal-notes">Progress/Notes:</label>
+             <textarea id="log-goal-notes" required rows="4"></textarea>
+             <div class="modal-buttons">
+                 <button class="close-modal">Cancel</button>
+                 <button id="save-goal-log-button">Save Log</button>
+             </div>
+         </div>
+     </div>
+
+
+    <script>
+        // --- Constants and Global Variables ---
+        const DB_NAME = 'PureHeartPathDB';
+        const DB_VERSION = 1; // Increment this when schema changes
+        let db; // IndexedDB database instance
+
+        const storeNames = ['areas', 'items', 'logs', 'journal', 'motivation'];
+
+        let currentView = 'dashboard-view';
+        let selectedAreaId = null;
+
+        // --- IndexedDB Wrapper Functions ---
+
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+                request.onupgradeneeded = (event) => {
+                    db = event.target.result;
+                    console.log('DB upgrade needed or created');
+
+                    if (!db.objectStoreNames.contains('areas')) {
+                        db.createObjectStore('areas', { keyPath: 'id', autoIncrement: true });
+                    }
+                    if (!db.objectStoreNames.contains('items')) {
+                        const itemsStore = db.createObjectStore('items', { keyPath: 'id', autoIncrement: true });
+                        itemsStore.createIndex('areaId', 'areaId', { unique: false });
+                        itemsStore.createIndex('type', 'type', { unique: false });
+                    }
+                    if (!db.objectStoreNames.contains('logs')) {
+                        const logsStore = db.createObjectStore('logs', { keyPath: 'id', autoIncrement: true });
+                        logsStore.createIndex('itemId', 'itemId', { unique: false });
+                        logsStore.createIndex('date', 'date', { unique: false }); // YYYY-MM-DD
+                        logsStore.createIndex('itemId_date', ['itemId', 'date'], { unique: false });
+                    }
+                    if (!db.objectStoreNames.contains('journal')) {
+                        const journalStore = db.createObjectStore('journal', { keyPath: 'id', autoIncrement: true });
+                        journalStore.createIndex('date', 'date', { unique: false }); // YYYY-MM-DD
+                    }
+                     if (!db.objectStoreNames.contains('motivation')) {
+                        const motivationStore = db.createObjectStore('motivation', { keyPath: 'id', autoIncrement: true });
+                        motivationStore.createIndex('areaId', 'areaId', { unique: false });
+                        motivationStore.createIndex('itemId', 'itemId', { unique: false }); // Optional link
+                     }
+
+                    console.log('Object stores created/upgraded');
+                };
+
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    console.log('DB opened successfully');
+                    resolve(db);
+                };
+
+                request.onerror = (event) => {
+                    console.error('IndexedDB error:', event.target.errorCode);
+                    alert('Failed to open database. Your browser may not support IndexedDB or there was an error.');
+                    reject(event.target.error);
+                };
+            });
+        }
+
+        function transaction(storeName, mode) {
+            const tx = db.transaction(storeName, mode);
+            const store = tx.objectStore(storeName);
+            return { store, tx };
+        }
+
+        function addData(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const { store, tx } = transaction(storeName, 'readwrite');
+                const request = store.add(data);
+
+                request.onsuccess = (event) => resolve(event.target.result);
+                request.onerror = (event) => {
+                    console.error(`Error adding data to ${storeName}:`, event.target.error);
+                    reject(event.target.error);
+                };
+                 tx.oncomplete = () => console.log(`Add transaction to ${storeName} complete`);
+                 tx.onabort = (event) => { console.error(`Add transaction to ${storeName} aborted:`, event.target.error); reject(event.target.error); };
+                 tx.onerror = (event) => { console.error(`Add transaction to ${storeName} error:`, event.target.error); reject(event.target.error); };
+            });
+        }
+
+        function getData(storeName, id) {
+            return new Promise((resolve, reject) => {
+                const { store } = transaction(storeName, 'readonly');
+                const request = store.get(id);
+
+                request.onsuccess = (event) => resolve(event.target.result);
+                request.onerror = (event) => {
+                    console.error(`Error getting data from ${storeName}:`, event.target.error);
+                    reject(event.target.error);
+                };
+            });
+        }
+
+        function getAllData(storeName, index = null, query = null) {
+             return new Promise((resolve, reject) => {
+                 const { store } = transaction(storeName, 'readonly');
+                 let req;
+                 if (index && query !== null) {
+                     req = store.index(index).getAll(query);
+                 } else {
+                     req = store.getAll();
+                 }
+
+                 req.onsuccess = (event) => resolve(event.target.result);
+                 req.onerror = (event) => {
+                     console.error(`Error getting all data from ${storeName}:`, event.target.error);
+                     reject(event.target.error);
+                 };
+             });
+         }
+
+
+        function updateData(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const { store, tx } = transaction(storeName, 'readwrite');
+                const request = store.put(data); // put will update if key exists, add if not
+
+                request.onsuccess = (event) => resolve(event.target.result);
+                request.onerror = (event) => {
+                    console.error(`Error updating data in ${storeName}:`, event.target.error);
+                    reject(event.target.error);
+                };
+                 tx.oncomplete = () => console.log(`Update transaction to ${storeName} complete`);
+                 tx.onabort = (event) => { console.error(`Update transaction to ${storeName} aborted:`, event.target.error); reject(event.target.error); };
+                 tx.onerror = (event) => { console.error(`Update transaction to ${storeName} error:`, event.target.error); reject(event.target.error); };
+            });
+        }
+
+        function deleteData(storeName, id) {
+            return new Promise((resolve, reject) => {
+                const { store, tx } = transaction(storeName, 'readwrite');
+                const request = store.delete(id);
+
+                request.onsuccess = () => resolve();
+                request.onerror = (event) => {
+                    console.error(`Error deleting data from ${storeName}:`, event.target.error);
+                    reject(event.target.error);
+                };
+                 tx.oncomplete = () => console.log(`Delete transaction from ${storeName} complete`);
+                 tx.onabort = (event) => { console.error(`Delete transaction from ${storeName} aborted:`, event.target.error); reject(event.target.error); };
+                 tx.onerror = (event) => { console.error(`Delete transaction from ${storeName} error:`, event.target.error); reject(event.target.error); };
+            });
+        }
+
+         function clearStore(storeName) {
+             return new Promise((resolve, reject) => {
+                 const { store, tx } = transaction(storeName, 'readwrite');
+                 const request = store.clear();
+
+                 request.onsuccess = () => resolve();
+                 request.onerror = (event) => {
+                     console.error(`Error clearing store ${storeName}:`, event.target.error);
+                     reject(event.target.error);
+                 };
+                  tx.oncomplete = () => console.log(`Clear transaction for ${storeName} complete`);
+                  tx.onabort = (event) => { console.error(`Clear transaction for ${storeName} aborted:`, event.target.error); reject(event.target.error); };
+                  tx.onerror = (event) => { console.error(`Clear transaction for ${storeName} error:`, event.target.error); reject(event.target.error); };
+             });
+         }
+
+
+        // --- UI Rendering Functions ---
+
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.getElementById(viewId).classList.add('active');
+
+            document.querySelectorAll('.nav-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelector(`.nav-button[data-view="${viewId}"]`).classList.add('active');
+
+            currentView = viewId;
+            // Trigger specific view loading logic
+            if (viewId === 'dashboard-view') {
+                loadDashboard();
+            } else if (viewId === 'areas-view') {
+                loadAreas();
+            } else if (viewId === 'journal-view') {
+                loadJournal();
+            } else if (viewId === 'data-view') {
+                 // Data view doesn't need specific loading beyond initial render
+            }
+        }
+
+        function renderAreas(areas) {
+            const listElement = document.getElementById('areas-list');
+            listElement.innerHTML = ''; // Clear current list
+
+            if (areas.length === 0) {
+                listElement.innerHTML = '<p class="text-center">No areas of focus added yet. Click "+ Add New Area" to get started.</p>';
+                return;
+            }
+
+            areas.forEach(area => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.id = area.id;
+                card.innerHTML = `
+                    <h3>${escapeHTML(area.name)}</h3>
+                    <p>${escapeHTML(area.description || 'No description.')}</p>
+                    <div class="card-actions">
+                        <button class="edit-area" data-id="${area.id}">Edit</button>
+                        <button class="delete-area delete" data-id="${area.id}">Delete</button>
+                    </div>
+                `;
+                 // Make the card itself clickable to view details
+                 card.addEventListener('click', (event) => {
+                     // Prevent clicking on buttons from triggering detail view
+                     if (!event.target.closest('button')) {
+                         showAreaDetail(area.id);
+                     }
+                 });
+                listElement.appendChild(card);
+            });
+        }
+
+        async function showAreaDetail(areaId) {
+             selectedAreaId = areaId;
+             const area = await getData('areas', areaId);
+             if (!area) {
+                 alert('Area not found!');
+                 loadAreas(); // Go back to areas list
+                 return;
+             }
+
+             document.getElementById('area-detail-name').textContent = escapeHTML(area.name);
+             document.getElementById('area-detail-description').textContent = escapeHTML(area.description || '');
+
+             document.getElementById('add-goal-button').dataset.areaId = areaId;
+             document.getElementById('add-habit-button').dataset.areaId = areaId;
+             document.getElementById('add-motivation-button').dataset.areaId = areaId;
+
+             await loadAreaItems(areaId);
+             await loadAreaMotivation(areaId);
+             // Logs summary will be loaded when an item is clicked
+
+             showView('area-detail-view');
+        }
+
+        async function loadAreaItems(areaId) {
+            const items = await getAllData('items', 'areaId', areaId);
+            const goalsList = document.getElementById('area-goals-list');
+            const habitsList = document.getElementById('area-habits-list');
+
+            goalsList.innerHTML = '';
+            habitsList.innerHTML = '';
+
+            const goals = items.filter(item => item.type === 'goal');
+            const habits = items.filter(item => item.type === 'habit');
+
+            if (goals.length === 0) {
+                 goalsList.innerHTML = '<li class="text-center">No goals yet.</li>';
+            } else {
+                 goals.forEach(goal => {
+                     const li = document.createElement('li');
+                     li.dataset.id = goal.id;
+                     li.dataset.type = 'goal';
+                     li.innerHTML = `
+                         <div class="item-details">
+                             <strong>${escapeHTML(goal.description)}</strong>
+                             <p><small>Target: ${escapeHTML(goal.details.target || 'N/A')}, Frequency: ${escapeHTML(goal.details.frequency || 'N/A')}</small></p>
+                         </div>
+                         <div class="item-actions">
+                             <button class="log-item" data-id="${goal.id}" data-type="goal">Log</button>
+                             <button class="view-logs" data-id="${goal.id}" data-type="goal">View Logs</button>
+                             <button class="edit-item" data-id="${goal.id}">Edit</button>
+                             <button class="delete-item delete" data-id="${goal.id}">Delete</button>
+                         </div>
+                     `;
+                     goalsList.appendChild(li);
+                 });
+            }
+
+
+            if (habits.length === 0) {
+                 habitsList.innerHTML = '<li class="text-center">No habits yet.</li>';
+            } else {
+                 habits.forEach(habit => {
+                     const li = document.createElement('li');
+                     li.dataset.id = habit.id;
+                     li.dataset.type = 'habit';
+                     li.innerHTML = `
+                         <div class="item-details">
+                             <strong>${escapeHTML(habit.description)}</strong>
+                             <p><small>Frequency: ${escapeHTML(habit.details.frequency || 'N/A')}</small></p>
+                         </div>
+                         <div class="item-actions">
+                             <button class="log-item" data-id="${habit.id}" data-type="habit">Log</button>
+                             <button class="view-logs" data-id="${habit.id}" data-type="habit">View Logs</button>
+                             <button class="edit-item" data-id="${habit.id}">Edit</button>
+                             <button class="delete-item delete" data-id="${habit.id}">Delete</button>
+                         </div>
+                     `;
+                     habitsList.appendChild(li);
+                 });
+            }
+        }
+
+         async function loadAreaMotivation(areaId) {
+             const motivationList = document.getElementById('area-motivation-list');
+             motivationList.innerHTML = '';
+             const motivations = await getAllData('motivation', 'areaId', areaId);
+
+             if (motivations.length === 0) {
+                 motivationList.innerHTML = '<li class="text-center">No motivation added for this area yet.</li>';
+                 return;
+             }
+
+             motivations.forEach(mot => {
+                 const li = document.createElement('li');
+                 li.dataset.id = mot.id;
+                 li.innerHTML = `
+                     <div class="item-details">
+                         ${mot.itemId ? `<strong>Linked Item ID: ${mot.itemId}</strong><br>` : ''}
+                         "${escapeHTML(mot.text)}"
+                         ${mot.source ? `<br><em>- ${escapeHTML(mot.source)}</em>` : ''}
+                     </div>
+                     <div class="item-actions">
+                         <button class="edit-motivation" data-id="${mot.id}">Edit</button>
+                         <button class="delete-motivation delete" data-id="${mot.id}">Delete</button>
+                     </div>
+                 `;
+                 motivationList.appendChild(li);
+             });
+         }
+
+
+        async function loadJournal() {
+            const journalList = document.getElementById('journal-list');
+            journalList.innerHTML = ''; // Clear current list
+
+            const entries = await getAllData('journal');
+            // Sort by date descending
+            entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (entries.length === 0) {
+                journalList.innerHTML = '<p class="text-center">No journal entries yet. Click "+ Add Journal Entry" to write your first reflection.</p>';
+                return;
+            }
+
+            entries.forEach(entry => {
+                const card = document.createElement('div');
+                card.classList.add('card', 'journal-entry');
+                card.dataset.id = entry.id;
+                card.innerHTML = `
+                    <h4>${escapeHTML(formatDate(entry.date))}</h4>
+                    <p>${escapeHTML(entry.entry)}</p>
+                    <div class="card-actions">
+                        <button class="edit-journal" data-id="${entry.id}">Edit</button>
+                        <button class="delete-journal delete" data-id="${entry.id}">Delete</button>
+                    </div>
+                `;
+                journalList.appendChild(card);
+            });
+        }
+
+        async function loadDashboard() {
+            const areas = await getAllData('areas');
+            const items = await getAllData('items');
+            const logs = await getAllData('logs');
+            const journal = await getAllData('journal');
+             const motivation = await getAllData('motivation');
+
+            document.getElementById('summary-areas-count').textContent = areas.length;
+            document.getElementById('summary-goals-count').textContent = items.filter(item => item.type === 'goal').length;
+            document.getElementById('summary-habits-count').textContent = items.filter(item => item.type === 'habit').length;
+
+             // Recent Activity (Logs + Journal)
+             const recentActivityList = document.getElementById('recent-logs-list');
+             recentActivityList.innerHTML = '';
+
+             // Get recent logs (e.g., last 7 days)
+             const sevenDaysAgo = new Date();
+             sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+             const recentLogs = logs.filter(log => new Date(log.date) >= sevenDaysAgo);
+
+             // Get recent journal entries (e.g., last 7 days)
+             const recentJournal = journal.filter(entry => new Date(entry.date) >= sevenDaysAgo);
+
+             // Combine and sort by date descending
+             const combinedActivity = [...recentLogs, ...recentJournal].sort((a, b) => {
+                 const dateA = new Date(a.date || a.createdAt); // Use date for logs/journal, createdAt for others if needed
+                 const dateB = new Date(b.date || b.createdAt);
+                 return dateB - dateA;
+             });
+
+             if (combinedActivity.length === 0) {
+                 recentActivityList.innerHTML = '<li class="text-center">No recent activity.</li>';
+             } else {
+                 // Limit to maybe 10 recent items
+                 combinedActivity.slice(0, 10).forEach(async (activity) => {
+                     const li = document.createElement('li');
+                     if (activity.entry) { // It's a journal entry
+                         li.innerHTML = `
+                             <div class="item-details">
+                                 <strong>Journal Entry:</strong> ${escapeHTML(activity.entry.substring(0, 50))}...
+                                 <br><small>${escapeHTML(formatDate(activity.date))}</small>
+                             </div>
+                         `;
+                     } else if (activity.itemId) { // It's a log entry
+                         const item = items.find(item => item.id === activity.itemId);
+                         const area = areas.find(area => area.id === (item ? item.areaId : null));
+                         li.innerHTML = `
+                             <div class="item-details">
+                                 <strong>Logged ${item ? escapeHTML(item.description) : 'Unknown Item'}</strong>
+                                 ${activity.type === 'habit' ? `(${escapeHTML(activity.status)})` : ''}
+                                 <br><small>${escapeHTML(formatDate(activity.date))}</small>
+                                 ${area ? `<small> in ${escapeHTML(area.name)}</small>` : ''}
+                             </div>
+                         `;
+                     }
+                     recentActivityList.appendChild(li);
+                 });
+             }
+
+             // Random Motivation
+             const dashboardMotivationList = document.getElementById('dashboard-motivation-list');
+             dashboardMotivationList.innerHTML = '';
+             if (motivation.length > 0) {
+                 const randomMot = motivation[Math.floor(Math.random() * motivation.length)];
+                 const li = document.createElement('li');
+                 li.innerHTML = `
+                     <div class="item-details">
+                         "${escapeHTML(randomMot.text)}"
+                         ${randomMot.source ? `<br><em>- ${escapeHTML(randomMot.source)}</em>` : ''}
+                     </div>
+                 `;
+                 dashboardMotivationList.appendChild(li);
+             } else {
+                 dashboardMotivationList.innerHTML = '<li class="text-center">Add some motivation texts in Areas or Journal views!</li>';
+             }
+
+
+        }
+
+        async function renderItemLogs(itemId, itemType) {
+            const logsContainer = document.getElementById('area-logs-summary');
+            logsContainer.innerHTML = ''; // Clear previous logs
+
+            const item = await getData('items', itemId);
+            if (!item) {
+                logsContainer.innerHTML = '<p class="text-center" style="color: var(--color-danger);">Item not found for logs.</p>';
+                return;
+            }
+
+            logsContainer.innerHTML += `<h3>Logs for: ${escapeHTML(item.description)}</h3>`;
+
+            const logs = await getAllData('logs', 'itemId', itemId);
+            logs.sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date descending
+
+            if (logs.length === 0) {
+                 logsContainer.innerHTML += '<p class="text-center">No logs recorded yet for this item.</p>';
+            } else {
+                 // Simple Calendar Visualization (Last 30 days)
+                 logsContainer.innerHTML += '<h4>Last 30 Days Consistency</h4>';
+                 logsContainer.innerHTML += '<div class="progress-calendar" id="progress-calendar"></div>';
+                 const calendarEl = document.getElementById('progress-calendar');
+                 const today = new Date();
+                 const logMap = new Map(logs.map(log => [log.date, log]));
+
+                 for (let i = 29; i >= 0; i--) {
+                     const date = new Date(today);
+                     date.setDate(today.getDate() - i);
+                     const dateString = formatDate(date);
+                     const log = logMap.get(dateString);
+
+                     const dayEl = document.createElement('div');
+                     dayEl.classList.add('progress-day');
+                     dayEl.dataset.date = dateString;
+                     dayEl.innerHTML = `<span>${date.getDate()}</span>`; // Day number
+
+                     if (log) {
+                          if (itemType === 'habit') {
+                               dayEl.classList.add(log.status); // done, partial, skipped
+                          } else {
+                               // For goals, any log means activity
+                               dayEl.classList.add('done'); // Or a different class like 'logged'
+                          }
+                     }
+                     calendarEl.appendChild(dayEl);
+                 }
+
+
+                 // Detailed Log List
+                 logsContainer.innerHTML += '<h4>Detailed Log History</h4>';
+                 const logListEl = document.createElement('ul');
+                 logs.forEach(log => {
+                     const li = document.createElement('li');
+                     li.classList.add('log-entry');
+                     li.dataset.id = log.id;
+                     li.dataset.type = 'log'; // Used for delete confirmation
+                     li.innerHTML = `
+                         <span class="log-date">${escapeHTML(formatDate(new Date(log.date)))}</span>
+                         ${itemType === 'habit' ? `<span class="log-status">(${escapeHTML(log.status)})</span>` : ''}
+                         <span class="log-notes">${escapeHTML(log.notes || (itemType === 'goal' ? 'No notes' : ''))}</span>
+                         <div class="log-actions">
+                             <button class="delete-log delete" data-id="${log.id}">Delete</button>
+                         </div>
+                     `;
+                     logListEl.appendChild(li);
+                 });
+                 logsContainer.appendChild(logListEl);
+            }
+        }
+
+
+        // --- Modal Handling ---
+
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+             // Reset forms within the modal
+             const form = document.getElementById(modalId).querySelector('form, .modal-content'); // Find form or content div
+             if (form) {
+                 form.reset ? form.reset() : form.querySelectorAll('input, textarea, select').forEach(el => {
+                     if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+                     else if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                     else el.value = '';
+                 });
+             }
+        }
+
+        // --- Data Management Logic (CRUD wrappers with UI refresh) ---
+
+        async function saveArea() {
+            const id = document.getElementById('area-id').value;
+            const name = document.getElementById('area-name').value.trim();
+            const description = document.getElementById('area-description').value.trim();
+
+            if (!name) {
+                alert('Area name is required.');
+                return;
+            }
+
+            const areaData = { name, description };
+            if (id) {
+                areaData.id = parseInt(id, 10); // Update existing
+                 await updateData('areas', areaData);
+                 alert('Area updated successfully!');
+            } else {
+                await addData('areas', areaData);
+                 alert('Area added successfully!');
+            }
+
+            hideModal('area-modal');
+            loadAreas(); // Refresh list
+        }
+
+        async function editArea(id) {
+            const area = await getData('areas', id);
+            if (area) {
+                document.getElementById('area-modal-title').textContent = 'Edit Area';
+                document.getElementById('area-id').value = area.id;
+                document.getElementById('area-name').value = area.name;
+                document.getElementById('area-description').value = area.description;
+                showModal('area-modal');
+            }
+        }
+
+         async function deleteArea(id) {
+             // Check if there are associated items (goals/habits) or motivation
+             const items = await getAllData('items', 'areaId', id);
+             const motivation = await getAllData('motivation', 'areaId', id);
+
+             if (items.length > 0 || motivation.length > 0) {
+                 alert('Cannot delete area with associated goals, habits, or motivation texts. Please delete them first.');
+                 return;
+             }
+
+             await deleteData('areas', id);
+             alert('Area deleted successfully!');
+             loadAreas(); // Refresh list
+         }
+
+
+        async function saveItem() {
+             const id = document.getElementById('item-id').value;
+             const areaId = parseInt(document.getElementById('item-area-id').value, 10);
+             const type = document.getElementById('item-type').value; // 'goal' or 'habit'
+             const description = document.getElementById('item-description').value.trim();
+
+             if (!description) {
+                 alert(`${type === 'goal' ? 'Goal' : 'Habit'} description is required.`);
+                 return;
+             }
+
+             const itemData = { areaId, type, description };
+
+             if (type === 'goal') {
+                 const target = document.getElementById('goal-target').value.trim();
+                 const frequency = document.getElementById('goal-frequency').value.trim();
+                 itemData.details = { target, frequency };
+             } else if (type === 'habit') {
+                 const frequency = document.getElementById('habit-frequency').value.trim();
+                 itemData.details = { frequency };
+             }
+             itemData.createdAt = new Date().toISOString(); // Timestamp
+
+             if (id) {
+                 itemData.id = parseInt(id, 10);
+                 await updateData('items', itemData);
+                 alert(`${type === 'goal' ? 'Goal' : 'Habit'} updated successfully!`);
+             } else {
+                 await addData('items', itemData);
+                 alert(`${type === 'goal' ? 'Goal' : 'Habit'} added successfully!`);
+             }
+
+             hideModal('item-modal');
+             loadAreaItems(areaId); // Refresh list for the current area
+         }
+
+         async function editItem(id) {
+             const item = await getData('items', id);
+             if (item) {
+                 document.getElementById('item-modal-title').textContent = `Edit ${item.type === 'goal' ? 'Goal' : 'Habit'}`;
+                 document.getElementById('item-id').value = item.id;
+                 document.getElementById('item-area-id').value = item.areaId;
+                 document.getElementById('item-type').value = item.type;
+                 document.getElementById('item-description').value = item.description;
+
+                 // Show/hide type-specific fields
+                 document.getElementById('goal-fields').classList.add('hidden');
+                 document.getElementById('habit-fields').classList.add('hidden');
+
+                 if (item.type === 'goal') {
+                     document.getElementById('goal-fields').classList.remove('hidden');
+                     document.getElementById('goal-target').value = item.details.target || '';
+                     document.getElementById('goal-frequency').value = item.details.frequency || '';
+                 } else if (item.type === 'habit') {
+                     document.getElementById('habit-fields').classList.remove('hidden');
+                     document.getElementById('habit-frequency').value = item.details.frequency || '';
+                 }
+
+                 showModal('item-modal');
+             }
+         }
+
+         async function deleteItem(id) {
+             // Check if there are associated logs or motivation
+             const logs = await getAllData('logs', 'itemId', id);
+             const motivation = await getAllData('motivation', 'itemId', id);
+
+             if (logs.length > 0 || motivation.length > 0) {
+                 alert('Cannot delete item with associated logs or motivation texts. Please delete them first.');
+                 return;
+             }
+
+             const item = await getData('items', id);
+             if (item) {
+                 await deleteData('items', id);
+                 alert(`${item.type === 'goal' ? 'Goal' : 'Habit'} deleted successfully!`);
+                 loadAreaItems(item.areaId); // Refresh list for the current area
+                 document.getElementById('area-logs-summary').innerHTML = '<p class="text-center">Select an item to see logs.</p>'; // Clear logs view
+             }
+         }
+
+
+         async function saveMotivation() {
+             const id = document.getElementById('motivation-id').value;
+             const areaId = parseInt(document.getElementById('motivation-area-id').value, 10);
+             const itemId = document.getElementById('motivation-item-id').value ? parseInt(document.getElementById('motivation-item-id').value, 10) : null; // Optional
+             const text = document.getElementById('motivation-text').value.trim();
+             const source = document.getElementById('motivation-source').value.trim();
+
+             if (!text) {
+                 alert('Motivation text is required.');
+                 return;
+             }
+
+             const motivationData = { areaId, itemId, text, source };
+             if (id) {
+                 motivationData.id = parseInt(id, 10);
+                 await updateData('motivation', motivationData);
+                 alert('Motivation updated successfully!');
+             } else {
+                 await addData('motivation', motivationData);
+                 alert('Motivation added successfully!');
+             }
+
+             hideModal('motivation-modal');
+             loadAreaMotivation(areaId); // Refresh list for the current area
+         }
+
+         async function editMotivation(id) {
+             const motivation = await getData('motivation', id);
+             if (motivation) {
+                 document.getElementById('motivation-modal-title').textContent = 'Edit Motivation';
+                 document.getElementById('motivation-id').value = motivation.id;
+                 document.getElementById('motivation-area-id').value = motivation.areaId;
+                 document.getElementById('motivation-item-id').value = motivation.itemId || '';
+                 document.getElementById('motivation-text').value = motivation.text;
+                 document.getElementById('motivation-source').value = motivation.source;
+                 showModal('motivation-modal');
+             }
+         }
+
+         async function deleteMotivation(id) {
+             const motivation = await getData('motivation', id);
+             if (motivation) {
+                 await deleteData('motivation', id);
+                 alert('Motivation deleted successfully!');
+                 loadAreaMotivation(motivation.areaId); // Refresh list for the current area
+             }
+         }
+
+
+         async function saveJournalEntry() {
+             const id = document.getElementById('journal-id').value;
+             const date = document.getElementById('journal-date').value;
+             const entry = document.getElementById('journal-entry').value.trim();
+
+             if (!date || !entry) {
+                 alert('Date and entry are required for a journal entry.');
+                 return;
+             }
+
+             const journalData = { date, entry };
+             if (id) {
+                 journalData.id = parseInt(id, 10);
+                 await updateData('journal', journalData);
+                 alert('Journal entry updated successfully!');
+             } else {
+                 journalData.createdAt = new Date().toISOString(); // Timestamp
+                 await addData('journal', journalData);
+                 alert('Journal entry added successfully!');
+             }
+
+             hideModal('journal-modal');
+             loadJournal(); // Refresh list
+         }
+
+         async function editJournalEntry(id) {
+             const entry = await getData('journal', id);
+             if (entry) {
+                 document.getElementById('journal-modal-title').textContent = 'Edit Journal Entry';
+                 document.getElementById('journal-id').value = entry.id;
+                 document.getElementById('journal-date').value = entry.date;
+                 document.getElementById('journal-entry').value = entry.entry;
+                 showModal('journal-modal');
+             }
+         }
+
+         async function deleteJournalEntry(id) {
+             await deleteData('journal', id);
+             alert('Journal entry deleted successfully!');
+             loadJournal(); // Refresh list
+         }
+
+
+         async function saveLog(itemId, itemType) {
+             const date = itemType === 'habit' ? document.getElementById('log-habit-date').value : document.getElementById('log-goal-date').value;
+             const notes = itemType === 'habit' ? document.getElementById('log-habit-notes').value.trim() : document.getElementById('log-goal-notes').value.trim();
+             const status = itemType === 'habit' ? document.getElementById('log-habit-status').value : null; // Only for habits
+
+             if (!date || (itemType === 'goal' && !notes)) {
+                 alert(`Date and ${itemType === 'goal' ? 'progress notes' : 'status'} are required.`);
+                 return;
+             }
+
+             // Check for existing log on the same date for the same item (prevent duplicates)
+             const existingLogs = await getAllData('logs', 'itemId_date', IDBKeyRange.only([itemId, date]));
+             if (existingLogs.length > 0) {
+                 alert('A log already exists for this item on this date.');
+                 return;
+             }
+
+             const logData = {
+                 itemId: itemId,
+                 type: itemType,
+                 date: date, // YYYY-MM-DD
+                 notes: notes,
+                 loggedAt: new Date().toISOString() // Timestamp
+             };
+             if (itemType === 'habit') {
+                 logData.status = status;
+             }
+
+             await addData('logs', logData);
+             alert(`${itemType === 'goal' ? 'Goal progress' : 'Habit'} logged successfully!`);
+
+             hideModal(itemType === 'habit' ? 'log-habit-modal' : 'log-goal-modal');
+             renderItemLogs(itemId, itemType); // Refresh logs visualization/list
+         }
+
+         async function deleteLog(id) {
+             const log = await getData('logs', id);
+             if (log) {
+                 await deleteData('logs', id);
+                 alert('Log deleted successfully!');
+                 renderItemLogs(log.itemId, log.type); // Refresh logs view
+             }
+         }
+
+
+        // --- Backup and Restore ---
+
+        async function exportData() {
+            try {
+                const exportData = {};
+                for (const storeName of storeNames) {
+                    exportData[storeName] = await getAllData(storeName);
+                }
+
+                const dataStr = JSON.stringify(exportData, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `pureheart_path_backup_${formatDate(new Date())}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                alert('Data exported successfully!');
+
+            } catch (error) {
+                console.error('Export failed:', error);
+                alert('Failed to export data. See console for details.');
+            }
+        }
+
+        async function importData(file) {
+            const statusElement = document.getElementById('import-status');
+            statusElement.textContent = 'Reading file...';
+
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                try {
+                    statusElement.textContent = 'Parsing data...';
+                    const data = JSON.parse(event.target.result);
+
+                    // Basic validation
+                    const requiredStoresExist = storeNames.every(store => Array.isArray(data[store]));
+                    if (!requiredStoresExist) {
+                        throw new Error('Invalid file format. Missing required data stores.');
+                    }
+
+                    // Confirm before replacing
+                    if (!confirm('Importing data will REPLACE your current data. Are you sure you want to continue?')) {
+                        statusElement.textContent = 'Import cancelled.';
+                        return;
+                    }
+
+                    statusElement.textContent = 'Clearing existing data...';
+                    // Clear all stores in a single transaction for atomicity
+                    const tx = db.transaction(storeNames, 'readwrite');
+                    tx.onerror = (event) => {
+                        console.error('Clear transaction failed:', event.target.error);
+                        statusElement.textContent = `Import failed: Clear transaction error. ${event.target.error.message}`;
+                    };
+                    tx.oncomplete = async () => {
+                         statusElement.textContent = 'Importing new data...';
+                         try {
+                             // Import data store by store
+                             for (const storeName of storeNames) {
+                                 const importTx = db.transaction(storeName, 'readwrite');
+                                 const store = importTx.objectStore(storeName);
+                                 for (const item of data[storeName]) {
+                                     // Remove 'id' to let autoIncrement assign new ones,
+                                     // UNLESS you specifically want to preserve IDs (more complex merge logic needed)
+                                     // For simple replace, let DB assign new IDs.
+                                     // If relationships (areaId, itemId) rely on old IDs, this simple replace breaks them.
+                                     // A robust import would map old IDs to new IDs.
+                                     // Let's implement a simple replace that *attempts* to keep IDs if possible,
+                                     // but relies on autoIncrement if IDs conflict or are missing.
+                                     // NOTE: This is still risky if relationships are critical.
+                                     // A safer approach for simple replace is to remove all IDs and re-add.
+                                     // Let's go with removing IDs for simplicity and safety regarding autoIncrement.
+                                     // Relationships will be broken unless the import file was generated from this app
+                                     // and the data structure is perfectly consistent.
+                                     // A truly robust import needs ID mapping. For this single-file app,
+                                     // simple replace assuming consistent export format is the most feasible approach.
+                                     // Let's try to preserve IDs first, as relationships are key.
+                                     // If put fails due to key conflict, maybe try add without key? No, put is better.
+                                     // If autoIncrement is used, providing an ID *might* work or might fail depending on browser.
+                                     // Let's rely on `put` which handles both add/update based on key.
+                                     // If the export contains IDs, `put` will use them. If not, autoIncrement applies.
+                                     // This means importing into an empty DB will likely work fine. Importing into non-empty
+                                     // might have ID conflicts if old IDs overlap with new autoIncrement values.
+                                     // Clearing first is the safest simple approach for 'replace'.
+
+                                      // Re-fetch the store object from the new transaction
+                                      const importStore = importTx.objectStore(storeName);
+                                      await new Promise((resolve, reject) => {
+                                           const putRequest = importStore.put(item); // Use put to handle existing/new keys
+                                           putRequest.onsuccess = () => resolve();
+                                           putRequest.onerror = (e) => {
+                                                console.warn(`Failed to put item in ${storeName}. Attempting add without ID:`, item, e.target.error);
+                                                // Fallback: Try adding without the ID if put fails (e.g., key conflict)
+                                                const itemWithoutId = { ...item };
+                                                delete itemWithoutId.id;
+                                                const addRequest = importStore.add(itemWithoutId);
+                                                addRequest.onsuccess = () => resolve();
+                                                addRequest.onerror = (e2) => {
+                                                     console.error(`Failed to add item without ID in ${storeName}:`, itemWithoutId, e2.target.error);
+                                                     reject(e2.target.error); // Still failed
+                                                };
+                                           };
+                                      });
+                                 }
+                                 await new Promise(resolve => importTx.oncomplete = resolve); // Wait for store transaction to complete
+                             }
+
+
+                            statusElement.textContent = 'Import successful!';
+                            alert('Data imported successfully! The app will now reload.');
+                            // Need to reload or re-initialize the app completely
+                            location.reload();
+
+                         } catch (importError) {
+                             console.error('Import failed during data insertion:', importError);
+                             statusElement.textContent = `Import failed: Data insertion error. ${importError.message}`;
+                             alert('Failed to import data during insertion. Your data might be in an inconsistent state. See console for details.');
+                         }
+                    };
+
+                    // Execute clear operations
+                    for (const storeName of storeNames) {
+                         tx.objectStore(storeName).clear();
+                    }
+
+
+                } catch (error) {
+                    console.error('Import failed:', error);
+                    statusElement.textContent = `Import failed: ${error.message}`;
+                    alert('Failed to import data. Please check the file format.');
+                }
+            };
+            reader.onerror = (event) => {
+                console.error('File reading error:', event);
+                statusElement.textContent = 'Error reading file.';
+                alert('Error reading file.');
+            };
+            reader.readAsText(file);
+        }
+
+
+        // --- Utility Functions ---
+
+        function formatDate(date) {
+            if (!(date instanceof Date)) {
+                 date = new Date(date); // Try to parse if not a Date object
+            }
+             if (isNaN(date.getTime())) {
+                 return 'Invalid Date';
+             }
+            const year = date.getFullYear();
+            const month = ('0' + (date.getMonth() + 1)).slice(-2);
+            const day = ('0' + date.getDate()).slice(-2);
+            return `${year}-${month}-${day}`;
+        }
+
+         function escapeHTML(str) {
+             if (typeof str !== 'string') return str;
+             const div = document.createElement('div');
+             div.appendChild(document.createTextNode(str));
+             return div.innerHTML;
+         }
+
+
+        // --- Event Listeners ---
+
+        function initEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    showView(e.target.dataset.view);
+                });
+            });
+
+            // Modal Close Buttons
+            document.querySelectorAll('.close-button, .close-modal').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    hideModal(e.target.closest('.modal').id);
+                });
+            });
+
+            // Add Area Button
+            document.getElementById('add-area-button').addEventListener('click', () => {
+                 document.getElementById('area-modal-title').textContent = 'Add New Area';
+                 document.getElementById('area-id').value = '';
+                 document.getElementById('area-name').value = '';
+                 document.getElementById('area-description').value = '';
+                showModal('area-modal');
+            });
+
+            // Save Area Button
+            document.getElementById('save-area-button').addEventListener('click', saveArea);
+
+            // Edit Area Button (Delegation)
+            document.getElementById('areas-list').addEventListener('click', (e) => {
+                if (e.target.classList.contains('edit-area')) {
+                    const areaId = parseInt(e.target.dataset.id, 10);
+                    editArea(areaId);
+                } else if (e.target.classList.contains('delete-area')) {
+                     const areaId = parseInt(e.target.dataset.id, 10);
+                     showConfirmModal('area', areaId, `Are you sure you want to delete this area? This action cannot be undone.`);
+                }
+            });
+
+            // Back to Areas Button
+            document.getElementById('back-to-areas').addEventListener('click', () => {
+                 showView('areas-view');
+                 selectedAreaId = null;
+                 // Clear detail view content? Maybe not necessary as it's hidden
+            });
+
+
+            // Add Item Buttons (Goal/Habit)
+            document.getElementById('add-goal-button').addEventListener('click', (e) => {
+                 const areaId = parseInt(e.target.dataset.areaId, 10);
+                 document.getElementById('item-modal-title').textContent = 'Add New Goal';
+                 document.getElementById('item-id').value = '';
+                 document.getElementById('item-area-id').value = areaId;
+                 document.getElementById('item-type').value = 'goal';
+                 document.getElementById('item-description').value = '';
+                 document.getElementById('goal-target').value = '';
+                 document.getElementById('goal-frequency').value = '';
+
+                 document.getElementById('goal-fields').classList.remove('hidden');
+                 document.getElementById('habit-fields').classList.add('hidden');
+
+                 showModal('item-modal');
+            });
+
+             document.getElementById('add-habit-button').addEventListener('click', (e) => {
+                 const areaId = parseInt(e.target.dataset.areaId, 10);
+                 document.getElementById('item-modal-title').textContent = 'Add New Habit';
+                 document.getElementById('item-id').value = '';
+                 document.getElementById('item-area-id').value = areaId;
+                 document.getElementById('item-type').value = 'habit';
+                 document.getElementById('item-description').value = '';
+                 document.getElementById('habit-frequency').value = '';
+
+                 document.getElementById('goal-fields').classList.add('hidden');
+                 document.getElementById('habit-fields').classList.remove('hidden');
+
+                 showModal('item-modal');
+             });
+
+             // Save Item Button
+             document.getElementById('save-item-button').addEventListener('click', saveItem);
+
+             // Edit/Delete/Log/View Logs Item Buttons (Delegation on area-goals-list and area-habits-list)
+             document.getElementById('area-goals-list').addEventListener('click', handleItemActions);
+             document.getElementById('area-habits-list').addEventListener('click', handleItemActions);
+
+             function handleItemActions(e) {
+                 const target = e.target;
+                 const itemId = parseInt(target.dataset.id, 10);
+                 const itemType = target.dataset.type; // 'goal' or 'habit'
+
+                 if (target.classList.contains('edit-item')) {
+                     editItem(itemId);
+                 } else if (target.classList.contains('delete-item')) {
+                     showConfirmModal('item', itemId, `Are you sure you want to delete this ${itemType}? This will also delete associated logs and motivation texts.`);
+                 } else if (target.classList.contains('log-item')) {
+                      if (itemType === 'habit') {
+                          showLogHabitModal(itemId);
+                      } else if (itemType === 'goal') {
+                          showLogGoalModal(itemId);
+                      }
+                 } else if (target.classList.contains('view-logs')) {
+                      renderItemLogs(itemId, itemType);
+                 }
+             }
+
+             // Log Habit Modal Save Button
+             document.getElementById('save-habit-log-button').addEventListener('click', () => {
+                 const itemId = parseInt(document.getElementById('log-habit-item-id').value, 10);
+                 saveLog(itemId, 'habit');
+             });
+
+              // Log Goal Modal Save Button
+             document.getElementById('save-goal-log-button').addEventListener('click', () => {
+                 const itemId = parseInt(document.getElementById('log-goal-item-id').value, 10);
+                 saveLog(itemId, 'goal');
+             });
+
+             // Delete Log Button (Delegation on area-logs-summary)
+             document.getElementById('area-logs-summary').addEventListener('click', (e) => {
+                 if (e.target.classList.contains('delete-log')) {
+                     const logId = parseInt(e.target.dataset.id, 10);
+                     showConfirmModal('log', logId, `Are you sure you want to delete this log entry?`);
+                 }
+             });
+
+
+             // Add Motivation Button
+             document.getElementById('add-motivation-button').addEventListener('click', (e) => {
+                 const areaId = parseInt(e.target.dataset.areaId, 10);
+                 document.getElementById('motivation-modal-title').textContent = 'Add New Motivation';
+                 document.getElementById('motivation-id').value = '';
+                 document.getElementById('motivation-area-id').value = areaId;
+                 document.getElementById('motivation-item-id').value = ''; // Clear linked item
+                 document.getElementById('motivation-text').value = '';
+                 document.getElementById('motivation-source').value = '';
+                 showModal('motivation-modal');
+             });
+
+             // Save Motivation Button
+             document.getElementById('save-motivation-button').addEventListener('click', saveMotivation);
+
+             // Edit/Delete Motivation Buttons (Delegation on area-motivation-list)
+             document.getElementById('area-motivation-list').addEventListener('click', (e) => {
+                 if (e.target.classList.contains('edit-motivation')) {
+                     const motId = parseInt(e.target.dataset.id, 10);
+                     editMotivation(motId);
+                 } else if (e.target.classList.contains('delete-motivation')) {
+                      const motId = parseInt(e.target.dataset.id, 10);
+                      showConfirmModal('motivation', motId, `Are you sure you want to delete this motivation text?`);
+                 }
+             });
+
+
+             // Add Journal Button
+             document.getElementById('add-journal-button').addEventListener('click', () => {
+                 document.getElementById('journal-modal-title').textContent = 'Add Journal Entry';
+                 document.getElementById('journal-id').value = '';
+                 document.getElementById('journal-date').value = formatDate(new Date()); // Default to today
+                 document.getElementById('journal-entry').value = '';
+                 showModal('journal-modal');
+             });
+
+             // Save Journal Button
+             document.getElementById('save-journal-button').addEventListener('click', saveJournalEntry);
+
+             // Edit/Delete Journal Buttons (Delegation on journal-list)
+             document.getElementById('journal-list').addEventListener('click', (e) => {
+                 if (e.target.classList.contains('edit-journal')) {
+                     const journalId = parseInt(e.target.dataset.id, 10);
+                     editJournalEntry(journalId);
+                 } else if (e.target.classList.contains('delete-journal')) {
+                      const journalId = parseInt(e.target.dataset.id, 10);
+                      showConfirmModal('journal', journalId, `Are you sure you want to delete this journal entry?`);
+                 }
+             });
+
+
+             // Confirm Delete Modal Button
+             document.getElementById('confirm-delete-button').addEventListener('click', async () => {
+                 const id = parseInt(document.getElementById('confirm-id').value, 10);
+                 const type = document.getElementById('confirm-type').value;
+
+                 try {
+                     if (type === 'area') {
+                         await deleteArea(id);
+                     } else if (type === 'item') {
+                         await deleteItem(id);
+                     } else if (type === 'journal') {
+                         await deleteJournalEntry(id);
+                     } else if (type === 'motivation') {
+                         await deleteMotivation(id);
+                     } else if (type === 'log') {
+                          await deleteLog(id);
+                     }
+                 } catch (error) {
+                     console.error(`Error deleting ${type}:`, error);
+                     alert(`Failed to delete ${type}. See console for details.`);
+                 } finally {
+                     hideModal('confirm-modal');
+                 }
+             });
+
+             // Show Confirm Modal helper
+             function showConfirmModal(type, id, message) {
+                 document.getElementById('confirm-message').textContent = message;
+                 document.getElementById('confirm-id').value = id;
+                 document.getElementById('confirm-type').value = type;
+                 showModal('confirm-modal');
+             }
+
+
+            // Backup/Restore
+            document.getElementById('export-data-button').addEventListener('click', exportData);
+
+            const importFileInput = document.getElementById('import-file-input');
+            const importButton = document.getElementById('import-data-button');
+            importFileInput.addEventListener('change', (event) => {
+                if (event.target.files.length > 0) {
+                    importButton.disabled = false;
+                } else {
+                    importButton.disabled = true;
+                }
+            });
+            importButton.addEventListener('click', () => {
+                const file = importFileInput.files[0];
+                if (file) {
+                    importData(file);
+                } else {
+                    alert('Please select a file to import.');
+                }
+            });
+
+
+             // Helper to show log habit modal
+             async function showLogHabitModal(itemId) {
+                 const item = await getData('items', itemId);
+                 if (!item || item.type !== 'habit') return;
+                 document.getElementById('log-habit-item-id').value = itemId;
+                 document.getElementById('log-habit-description').textContent = item.description;
+                 document.getElementById('log-habit-date').value = formatDate(new Date()); // Default to today
+                 document.getElementById('log-habit-status').value = 'done'; // Default status
+                 document.getElementById('log-habit-notes').value = '';
+                 showModal('log-habit-modal');
+             }
+
+              // Helper to show log goal modal
+             async function showLogGoalModal(itemId) {
+                 const item = await getData('items', itemId);
+                 if (!item || item.type !== 'goal') return;
+                 document.getElementById('log-goal-item-id').value = itemId;
+                 document.getElementById('log-goal-description').textContent = item.description;
+                 document.getElementById('log-goal-date').value = formatDate(new Date()); // Default to today
+                 document.getElementById('log-goal-notes').value = '';
+                 showModal('log-goal-modal');
+             }
+
+        }
+
+        // --- Initialization ---
+
+        async function initApp() {
+            try {
+                await openDB();
+                initEventListeners();
+                // Load initial view (Dashboard)
+                showView('dashboard-view');
+            } catch (error) {
+                console.error('App initialization failed:', error);
+                // Display a message to the user if initialization fails
+                document.getElementById('app-content').innerHTML = `
+                    <div class="container card text-center" style="color: var(--color-danger);">
+                        <h2>Initialization Failed</h2>
+                        <p>Could not initialize the application database.</p>
+                        <p>Please ensure your browser supports IndexedDB and try reloading the page.</p>
+                        <p>Error details: ${escapeHTML(error.message || error)}</p>
+                    </div>
+                `;
+                 document.querySelector('nav').classList.add('hidden'); // Hide nav if app fails
+            }
+        }
+
+        // Load data for Areas view
+        async function loadAreas() {
+            const areas = await getAllData('areas');
+            renderAreas(areas);
+        }
+
+
+        // Run initialization when the DOM is ready
+        document.addEventListener('DOMContentLoaded', initApp);
+
+    </script>
+
+</body>
+</html>

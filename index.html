@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PureHeart Path</title>
+    <!-- Author: Yasin Ullah. Pakistani. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0a192f; /* Deep Navy */
+            --secondary-color: #172a45; /* Lighter Navy */
+            --accent-color: #64ffda; /* Bright Teal/Mint */
+            --text-color: #ccd6f6; /* Light Slate */
+            --text-secondary-color: #8892b0; /* Slate */
+            --border-color: #233554;
+            --card-bg: #112240;
+            --success-color: #64ffda;
+            --warning-color: #f7b731;
+            --danger-color: #f94144;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --futuristic-font: 'Orbitron', sans-serif; /* Optional for headers */
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--secondary-color);
+            color: var(--accent-color);
+            padding: 1rem 1.5rem;
+            text-align: center;
+            font-family: var(--futuristic-font), var(--font-family);
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            border-bottom: 2px solid var(--accent-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            padding: 0.5rem 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        nav button {
+            background-color: transparent;
+            color: var(--text-secondary-color);
+            border: 1px solid transparent;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        nav button:hover, nav button.active {
+            color: var(--accent-color);
+            background-color: rgba(100, 255, 218, 0.1);
+            border-bottom: 1px solid var(--accent-color);
+        }
+
+        nav button i {
+            margin-right: 0.5rem;
+        }
+
+        #app-container {
+            flex-grow: 1;
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .view {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            font-family: var(--futuristic-font), var(--font-family);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 {
+            color: var(--text-color);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary-color);
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.3);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background-color: #52d8bc; /* Slightly darker accent */
+        }
+
+        .btn-secondary {
+            background-color: var(--text-secondary-color);
+            color: var(--primary-color);
+        }
+        .btn-secondary:hover {
+            background-color: #7a85a0;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #e03131;
+        }
+        
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li.list-item {
+            background-color: var(--secondary-color);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+            border-left: 3px solid var(--accent-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+        li.list-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .list-item-content {
+            flex-grow: 1;
+        }
+        .list-item-actions button {
+            margin-left: 0.5rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            animation: fadeInModal 0.3s;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 10% auto;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            position: relative;
+            animation: slideInModal 0.3s;
+        }
+        
+        @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInModal { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .close-modal {
+            color: var(--text-secondary-color);
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-modal:hover,
+        .close-modal:focus {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-secondary-color);
+            padding: 2rem;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            color: var(--accent-color);
+            opacity: 0.7;
+        }
+
+        /* Habit Tracker Calendar */
+        .habit-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 1rem;
+            max-width: 350px; /* Adjust as needed */
+        }
+        .calendar-day {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--secondary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .calendar-day.header {
+            background-color: transparent;
+            border: none;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        .calendar-day.empty {
+            background-color: transparent;
+            border: none;
+            cursor: default;
+        }
+        .calendar-day.done { background-color: var(--success-color); color: var(--primary-color); }
+        .calendar-day.partial { background-color: var(--warning-color); color: var(--primary-color); }
+        .calendar-day.missed { background-color: var(--danger-color); color: white; }
+        .calendar-day:not(.empty):not(.header):hover {
+            opacity: 0.8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--secondary-color);
+            color: var(--text-secondary-color);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto; /* Pushes footer to bottom */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header { font-size: 1.5rem; }
+            nav { flex-direction: column; align-items: stretch; }
+            nav button { text-align: left; width: 100%; margin-bottom: 0.25rem; }
+            .modal-content { margin: 20% auto; width: 95%; }
+            #app-container { padding: 1rem; }
+            .btn { width: 100%; margin-bottom: 0.5rem; }
+            .list-item { flex-direction: column; align-items: flex-start; }
+            .list-item-actions { margin-top: 0.5rem; width: 100%; }
+            .list-item-actions button { width: auto; margin-right: 0.5rem; }
+        }
+        
+        /* Growth/Pathways inspired visuals */
+        .pathway-decoration {
+            position: relative;
+            padding-left: 20px; /* Space for the line */
+        }
+        .pathway-decoration::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--accent-color);
+            opacity: 0.5;
+        }
+        .pathway-decoration-dot::before {
+            content: '';
+            position: absolute;
+            left: -2px; /* Adjust to center on the line */
+            top: 0.6em; /* Align with text */
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .goal-item, .habit-item {
+            margin-left: 20px; /* Indent goals/habits under areas */
+        }
+
+        /* Progress bar */
+        .progress-bar-container {
+            width: 100%;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        .progress-bar {
+            height: 15px;
+            background-color: var(--accent-color);
+            width: 0%; /* Set by JS */
+            text-align: center;
+            line-height: 15px;
+            color: var(--primary-color);
+            font-size: 0.7rem;
+            font-weight: bold;
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <header>PureHeart Path</header>
+    <nav id="main-nav">
+        <button data-view="dashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
+        <button data-view="areas"><i class="fas fa-compass"></i> Areas of Focus</button>
+        <button data-view="habits"><i class="fas fa-tasks"></i> Habits & Tracking</button>
+        <button data-view="journal"><i class="fas fa-book-open"></i> Journal</button>
+        <button data-view="resources"><i class="fas fa-lightbulb"></i> Resources</button>
+        <button data-view="progress"><i class="fas fa-chart-line"></i> Progress</button>
+        <button data-view="settings"><i class="fas fa-cog"></i> Settings</button>
+    </nav>
+
+    <div id="app-container">
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="view active">
+            <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+            <div class="card">
+                <h3>Quick Overview</h3>
+                <p id="dashboard-summary">Loading your spiritual journey insights...</p>
+                <div id="quick-habit-tracker">
+                    <h4>Today's Habits (<span id="today-date"></span>)</h4>
+                    <div id="today-habits-list">
+                        <!-- Today's habits will be populated here -->
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-quote-left"></i> Motivational Spark</h3>
+                <p id="motivational-quote-display">Loading a motivational quote...</p>
+            </div>
+        </div>
+
+        <!-- Areas of Focus View -->
+        <div id="areas-view" class="view">
+            <h2><i class="fas fa-compass"></i> Areas of Focus</h2>
+            <button id="addAreaBtn" class="btn"><i class="fas fa-plus"></i> Add New Area</button>
+            <div id="areasList" class="item-list"></div>
+        </div>
+
+        <!-- Habits & Tracking View -->
+        <div id="habits-view" class="view">
+            <h2><i class="fas fa-tasks"></i> Habits & Tracking</h2>
+            <div class="form-group">
+                <label for="habitTrackerAreaSelect">Select Area to View Habits:</label>
+                <select id="habitTrackerAreaSelect"></select>
+            </div>
+            <div id="habitsForTrackingList">
+                <!-- Habits for the selected area will be listed here for tracking -->
+            </div>
+        </div>
+        
+        <!-- Journal View -->
+        <div id="journal-view" class="view">
+            <h2><i class="fas fa-book-open"></i> Journal</h2>
+            <button id="addJournalEntryBtn" class="btn"><i class="fas fa-plus"></i> New Journal Entry</button>
+            <div id="journalEntriesList" class="item-list"></div>
+        </div>
+
+        <!-- Resources View -->
+        <div id="resources-view" class="view">
+            <h2><i class="fas fa-lightbulb"></i> Motivational Resources</h2>
+            <button id="addResourceBtn" class="btn"><i class="fas fa-plus"></i> Add New Resource</button>
+            <div id="resourcesList" class="item-list"></div>
+        </div>
+
+        <!-- Progress View -->
+        <div id="progress-view" class="view">
+            <h2><i class="fas fa-chart-line"></i> Progress Visualization</h2>
+            <div class="form-group">
+                <label for="progressHabitSelect">Select Habit for Calendar View:</label>
+                <select id="progressHabitSelect"></select>
+            </div>
+            <div id="habitCalendarContainer">
+                <h3 id="calendarHabitName"></h3>
+                <div class="habit-calendar-controls" style="margin-bottom: 10px; display: flex; gap: 10px; align-items: center;">
+                    <button id="prevMonthBtn" class="btn btn-small"><i class="fas fa-chevron-left"></i> Prev</button>
+                    <span id="currentMonthYear"></span>
+                    <button id="nextMonthBtn" class="btn btn-small">Next <i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div id="habitCalendar" class="habit-calendar"></div>
+            </div>
+            <hr style="margin: 2rem 0; border-color: var(--border-color);">
+            <h3>Goal Progress</h3>
+            <div id="goalProgressContainer">
+                <!-- Goal progress bars will be shown here -->
+            </div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="settings-view" class="view">
+            <h2><i class="fas fa-cog"></i> Settings</h2>
+            <div class="card">
+                <h3>Data Management</h3>
+                <p>Backup your data to a JSON file or restore from a previous backup.</p>
+                <button id="backupDataBtn" class="btn"><i class="fas fa-download"></i> Backup Data</button>
+                <div class="form-group" style="margin-top:1rem;">
+                    <label for="restoreFile">Restore Data (JSON file):</label>
+                    <input type="file" id="restoreFile" accept=".json" style="padding: 0.5rem; background-color: var(--secondary-color);">
+                </div>
+                <button id="restoreDataBtn" class="btn btn-danger"><i class="fas fa-upload"></i> Restore Data</button>
+                <p style="color: var(--warning-color); font-size: 0.9rem; margin-top: 0.5rem;"><i class="fas fa-exclamation-triangle"></i> Warning: Restoring data will overwrite all current data in the app.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="areaModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" data-modal-id="areaModal">&times;</span>
+            <h3 id="areaModalTitle">Add/Edit Area</h3>
+            <form id="areaForm">
+                <input type="hidden" id="areaId">
+                <div class="form-group">
+                    <label for="areaName">Area Name (e.g., Controlling Anger, Increasing Charity):</label>
+                    <input type="text" id="areaName" required>
+                </div>
+                <div class="form-group">
+                    <label for="areaDescription">Description (optional):</label>
+                    <textarea id="areaDescription"></textarea>
+                </div>
+                <button type="submit" class="btn"><i class="fas fa-save"></i> Save Area</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="goalModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" data-modal-id="goalModal">&times;</span>
+            <h3 id="goalModalTitle">Add/Edit Goal</h3>
+            <form id="goalForm">
+                <input type="hidden" id="goalId">
+                <input type="hidden" id="goalAreaId">
+                <div class="form-group">
+                    <label for="goalTitle">Goal Title (Specific, Measurable):</label>
+                    <input type="text" id="goalTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="goalDescription">Description (optional):</label>
+                    <textarea id="goalDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="goalTargetDate">Target Date (optional):</label>
+                    <input type="date" id="goalTargetDate">
+                </div>
+                 <div class="form-group">
+                    <label for="goalIsAchieved">Achieved:</label>
+                    <input type="checkbox" id="goalIsAchieved" style="width:auto;">
+                </div>
+                <button type="submit" class="btn"><i class="fas fa-save"></i> Save Goal</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="habitModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" data-modal-id="habitModal">&times;</span>
+            <h3 id="habitModalTitle">Add/Edit Habit</h3>
+            <form id="habitForm">
+                <input type="hidden" id="habitId">
+                <input type="hidden" id="habitAreaId"> <!-- Area ID to which this habit belongs -->
+                 <div class="form-group">
+                    <label for="habitGoalId">Link to Goal (optional):</label>
+                    <select id="habitGoalId"></select> <!-- Populated with goals from the same area -->
+                </div>
+                <div class="form-group">
+                    <label for="habitName">Habit Name (e.g., Read Quran for 15 mins):</label>
+                    <input type="text" id="habitName" required>
+                </div>
+                <div class="form-group">
+                    <label for="habitFrequency">Frequency (e.g., Daily, 3 times a week):</label>
+                    <input type="text" id="habitFrequency" placeholder="Daily, Weekly, Mon/Wed/Fri, etc.">
+                </div>
+                <button type="submit" class="btn"><i class="fas fa-save"></i> Save Habit</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="trackingModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" data-modal-id="trackingModal">&times;</span>
+            <h3>Log Habit for <span id="trackingHabitName"></span> on <span id="trackingDate"></span></h3>
+            <form id="trackingForm">
+                <input type="hidden" id="trackingHabitId">
+                <input type="hidden" id="trackingLogDate">
+                <div class="form-group">
+                    <label for="trackingStatus">Status:</label>
+                    <select id="trackingStatus">
+                        <option value="done">Done</option>
+                        <option value="partial">Partially Done</option>
+                        <option value="missed">Missed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="trackingReflection">Reflection (optional):</label>
+                    <textarea id="trackingReflection"></textarea>
+                </div>
+                <button type="submit" class="btn"><i class="fas fa-save"></i> Save Log</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="journalEntryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" data-modal-id="journalEntryModal">&times;</span>
+            <h3 id="journalEntryModalTitle">Add/Edit Journal Entry</h3>
+            <form id="journalEntryForm">
+                <input type="hidden" id="journalEntryId">
+                <div class="form-group">
+                    <label for="journalEntryDate">Date:</label>
+                    <input type="date" id="journalEntryDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="journalEntryContent">Content:</label>
+                    <textarea id="journalEntryContent" rows="10" required></textarea>
+                </div>
+                <button type="submit" class="btn"><i class="fas fa-save"></i> Save Entry</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="resourceModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" data-modal-id="resourceModal">&times;</span>
+            <h3 id="resourceModalTitle">Add/Edit Resource</h3>
+            <form id="resourceForm">
+                <input type="hidden" id="resourceId">
+                <div class="form-group">
+                    <label for="resourceText">Text (Quran Ayah, Hadith, Quote):</label>
+                    <textarea id="resourceText" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="resourceSource">Source (e.g., Quran 2:286, Sahih Bukhari 1):</label>
+                    <input type="text" id="resourceSource">
+                </div>
+                <div class="form-group">
+                    <label for="resourceAreaLink">Link to Area (optional):</label>
+                    <select id="resourceAreaLink">
+                        <option value="">None</option>
+                        <!-- Populate with areas -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="resourceNotes">Notes (optional):</label>
+                    <textarea id="resourceNotes"></textarea>
+                </div>
+                <button type="submit" class="btn"><i class="fas fa-save"></i> Save Resource</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        PureHeart Path &copy; <span id="currentYear"></span>. Author: Yasin Ullah. Pakistani.
+    </footer>
+
+    <script>
+        // Author: Yasin Ullah. Pakistani.
+        const App = {
+            db: null,
+            currentView: 'dashboard',
+            currentAreaIdForDetails: null, // For managing goals/habits within an area context
+            currentCalendarDate: new Date(), // For habit calendar month navigation
+
+            DB_NAME: 'PureHeartPathDB',
+            DB_VERSION: 1,
+            OBJECT_STORES: {
+                AREAS: 'areas',
+                GOALS: 'goals',
+                HABITS: 'habits',
+                TRACKING_LOGS: 'trackingLogs',
+                JOURNAL_ENTRIES: 'journalEntries',
+                RESOURCES: 'motivationalTexts'
+            },
+
+            init: function() {
+                this.initDB().then(() => {
+                    console.log("Database initialized.");
+                    this.renderApp();
+                    this.attachEventListeners();
+                    document.getElementById('currentYear').textContent = new Date().getFullYear();
+                    document.getElementById('today-date').textContent = new Date().toLocaleDateString();
+                }).catch(error => {
+                    console.error("Error initializing app:", error);
+                    alert("Error initializing database. The app may not function correctly.");
+                });
+            },
+
+            initDB: function() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+
+                    request.onerror = (event) => {
+                        console.error("IndexedDB error:", event.target.error);
+                        reject("IndexedDB error: " + event.target.error);
+                    };
+
+                    request.onsuccess = (event) => {
+                        this.db = event.target.result;
+                        resolve();
+                    };
+
+                    request.onupgradeneeded = (event) => {
+                        this.db = event.target.result;
+                        const { AREAS, GOALS, HABITS, TRACKING_LOGS, JOURNAL_ENTRIES, RESOURCES } = this.OBJECT_STORES;
+
+                        if (!this.db.objectStoreNames.contains(AREAS)) {
+                            this.db.createObjectStore(AREAS, { keyPath: 'id', autoIncrement: true });
+                        }
+                        if (!this.db.objectStoreNames.contains(GOALS)) {
+                            const goalStore = this.db.createObjectStore(GOALS, { keyPath: 'id', autoIncrement: true });
+                            goalStore.createIndex('areaId', 'areaId', { unique: false });
+                        }
+                        if (!this.db.objectStoreNames.contains(HABITS)) {
+                            const habitStore = this.db.createObjectStore(HABITS, { keyPath: 'id', autoIncrement: true });
+                            habitStore.createIndex('areaId', 'areaId', { unique: false });
+                            habitStore.createIndex('goalId', 'goalId', { unique: false });
+                        }
+                        if (!this.db.objectStoreNames.contains(TRACKING_LOGS)) {
+                            const trackingStore = this.db.createObjectStore(TRACKING_LOGS, { keyPath: 'id', autoIncrement: true });
+                            trackingStore.createIndex('habitId_date', ['habitId', 'date'], { unique: true });
+                            trackingStore.createIndex('habitId', 'habitId', { unique: false });
+                            trackingStore.createIndex('date', 'date', { unique: false });
+                        }
+                        if (!this.db.objectStoreNames.contains(JOURNAL_ENTRIES)) {
+                            const journalStore = this.db.createObjectStore(JOURNAL_ENTRIES, { keyPath: 'id', autoIncrement: true });
+                            journalStore.createIndex('date', 'date', { unique: false });
+                        }
+                        if (!this.db.objectStoreNames.contains(RESOURCES)) {
+                            const resourceStore = this.db.createObjectStore(RESOURCES, { keyPath: 'id', autoIncrement: true });
+                            resourceStore.createIndex('areaId', 'areaId', { unique: false });
+                        }
+                        console.log("Database upgrade complete.");
+                    };
+                });
+            },
+            
+            // Generic DB Operations
+            performDbOperation: function(storeName, mode, operation) {
+                return new Promise((resolve, reject) => {
+                    if (!this.db) {
+                        reject("Database not initialized.");
+                        return;
+                    }
+                    const transaction = this.db.transaction(storeName, mode);
+                    const store = transaction.objectStore(storeName);
+                    operation(store, resolve, reject);
+                    transaction.onerror = (event) => reject(event.target.error);
+                });
+            },
+
+            addItem: function(storeName, item) {
+                return this.performDbOperation(storeName, 'readwrite', (store, resolve, reject) => {
+                    const request = store.add(item);
+                    request.onsuccess = () => resolve(request.result); // Returns the key of the new object
+                    request.onerror = () => reject(request.error);
+                });
+            },
+
+            getItem: function(storeName, key) {
+                return this.performDbOperation(storeName, 'readonly', (store, resolve, reject) => {
+                    const request = store.get(key);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            },
+
+            getAllItems: function(storeName) {
+                return this.performDbOperation(storeName, 'readonly', (store, resolve, reject) => {
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            },
+            
+            getItemsByIndex: function(storeName, indexName, query) {
+                return this.performDbOperation(storeName, 'readonly', (store, resolve, reject) => {
+                    const index = store.index(indexName);
+                    const request = index.getAll(query);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            },
+            
+            getItemByIndex: function(storeName, indexName, query) { // For unique indexes
+                return this.performDbOperation(storeName, 'readonly', (store, resolve, reject) => {
+                    const index = store.index(indexName);
+                    const request = index.get(query);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            },
+
+            updateItem: function(storeName, item) {
+                return this.performDbOperation(storeName, 'readwrite', (store, resolve, reject) => {
+                    const request = store.put(item);
+                    request.onsuccess = () => resolve(request.result); // Returns the key
+                    request.onerror = () => reject(request.error);
+                });
+            },
+
+            deleteItem: function(storeName, key) {
+                return this.performDbOperation(storeName, 'readwrite', (store, resolve, reject) => {
+                    const request = store.delete(key);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            },
+            
+            clearStore: function(storeName) {
+                return this.performDbOperation(storeName, 'readwrite', (store, resolve, reject) => {
+                    const request = store.clear();
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            },
+
+            // UI Rendering
+            renderApp: function() {
+                this.showView(this.currentView);
+                // Specific rendering functions for each view if needed on initial load or view switch
+                if (this.currentView === 'dashboard') this.renderDashboard();
+                if (this.currentView === 'areas') this.renderAreasList();
+                if (this.currentView === 'habits') this.renderHabitsForTracking();
+                if (this.currentView === 'journal') this.renderJournalEntriesList();
+                if (this.currentView === 'resources') this.renderResourcesList();
+                if (this.currentView === 'progress') this.renderProgressView();
+            },
+
+            showView: function(viewId) {
+                document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+                document.getElementById(`${viewId}-view`).classList.add('active');
+                
+                document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`nav button[data-view="${viewId}"]`).classList.add('active');
+                
+                this.currentView = viewId;
+            },
+
+            // Modal Handling
+            openModal: function(modalId) {
+                document.getElementById(modalId).style.display = 'block';
+            },
+            closeModal: function(modalId) {
+                document.getElementById(modalId).style.display = 'none';
+                // Reset forms within modals if needed
+                const form = document.getElementById(modalId).querySelector('form');
+                if (form) form.reset();
+            },
+
+            // Attach Event Listeners
+            attachEventListeners: function() {
+                // Navigation
+                document.getElementById('main-nav').addEventListener('click', (e) => {
+                    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                        const button = e.target.closest('button');
+                        const viewId = button.dataset.view;
+                        if (viewId) {
+                            this.showView(viewId);
+                            this.renderApp(); // Re-render content for the new view
+                        }
+                    }
+                });
+
+                // Modal close buttons
+                document.querySelectorAll('.close-modal').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.closeModal(e.target.dataset.modalId));
+                });
+                window.addEventListener('click', (e) => { // Close modal if clicked outside
+                    if (e.target.classList.contains('modal')) {
+                        this.closeModal(e.target.id);
+                    }
+                });
+
+                // Areas
+                document.getElementById('addAreaBtn').addEventListener('click', () => {
+                    document.getElementById('areaForm').reset();
+                    document.getElementById('areaId').value = '';
+                    document.getElementById('areaModalTitle').textContent = 'Add New Area';
+                    this.openModal('areaModal');
+                });
+                document.getElementById('areaForm').addEventListener('submit', this.handleAreaFormSubmit.bind(this));
+
+                // Goals (event delegation for dynamically added "Add Goal" buttons)
+                document.getElementById('areasList').addEventListener('click', async (e) => {
+                    if (e.target.classList.contains('add-goal-btn')) {
+                        const areaId = parseInt(e.target.dataset.areaId);
+                        document.getElementById('goalForm').reset();
+                        document.getElementById('goalId').value = '';
+                        document.getElementById('goalAreaId').value = areaId;
+                        document.getElementById('goalModalTitle').textContent = 'Add New Goal';
+                        this.openModal('goalModal');
+                    }
+                    if (e.target.classList.contains('edit-goal-btn')) {
+                        const goalId = parseInt(e.target.dataset.goalId);
+                        const goal = await this.getItem(this.OBJECT_STORES.GOALS, goalId);
+                        if (goal) {
+                            document.getElementById('goalForm').reset();
+                            document.getElementById('goalId').value = goal.id;
+                            document.getElementById('goalAreaId').value = goal.areaId;
+                            document.getElementById('goalTitle').value = goal.title;
+                            document.getElementById('goalDescription').value = goal.description || '';
+                            document.getElementById('goalTargetDate').value = goal.targetDate || '';
+                            document.getElementById('goalIsAchieved').checked = goal.isAchieved || false;
+                            document.getElementById('goalModalTitle').textContent = 'Edit Goal';
+                            this.openModal('goalModal');
+                        }
+                    }
+                    if (e.target.classList.contains('delete-goal-btn')) {
+                        const goalId = parseInt(e.target.dataset.goalId);
+                        if (confirm('Are you sure you want to delete this goal and its associated habits and tracking logs?')) {
+                            await this.deleteGoalAndRelatedData(goalId);
+                            this.renderAreasList();
+                        }
+                    }
+                    if (e.target.classList.contains('add-habit-btn')) { // For habits directly under an area, or linked to a goal
+                        const areaId = parseInt(e.target.dataset.areaId);
+                        const goalId = e.target.dataset.goalId ? parseInt(e.target.dataset.goalId) : null;
+                        
+                        document.getElementById('habitForm').reset();
+                        document.getElementById('habitId').value = '';
+                        document.getElementById('habitAreaId').value = areaId;
+                        
+                        const habitGoalSelect = document.getElementById('habitGoalId');
+                        habitGoalSelect.innerHTML = '<option value="">None (General Habit for Area)</option>';
+                        const goals = await this.getItemsByIndex(this.OBJECT_STORES.GOALS, 'areaId', areaId);
+                        goals.forEach(g => {
+                            const option = document.createElement('option');
+                            option.value = g.id;
+                            option.textContent = g.title;
+                            if (goalId && g.id === goalId) option.selected = true;
+                            habitGoalSelect.appendChild(option);
+                        });
+
+                        document.getElementById('habitModalTitle').textContent = 'Add New Habit';
+                        this.openModal('habitModal');
+                    }
+                    if (e.target.classList.contains('edit-habit-btn')) {
+                        const habitId = parseInt(e.target.dataset.habitId);
+                        const habit = await this.getItem(this.OBJECT_STORES.HABITS, habitId);
+                        if (habit) {
+                            document.getElementById('habitForm').reset();
+                            document.getElementById('habitId').value = habit.id;
+                            document.getElementById('habitAreaId').value = habit.areaId;
+                            document.getElementById('habitName').value = habit.name;
+                            document.getElementById('habitFrequency').value = habit.frequency || '';
+                            
+                            const habitGoalSelect = document.getElementById('habitGoalId');
+                            habitGoalSelect.innerHTML = '<option value="">None (General Habit for Area)</option>';
+                            const goals = await this.getItemsByIndex(this.OBJECT_STORES.GOALS, 'areaId', habit.areaId);
+                            goals.forEach(g => {
+                                const option = document.createElement('option');
+                                option.value = g.id;
+                                option.textContent = g.title;
+                                if (habit.goalId && g.id === habit.goalId) option.selected = true;
+                                habitGoalSelect.appendChild(option);
+                            });
+
+                            document.getElementById('habitModalTitle').textContent = 'Edit Habit';
+                            this.openModal('habitModal');
+                        }
+                    }
+                    if (e.target.classList.contains('delete-habit-btn')) {
+                        const habitId = parseInt(e.target.dataset.habitId);
+                        if (confirm('Are you sure you want to delete this habit and its tracking logs?')) {
+                            await this.deleteHabitAndTrackingLogs(habitId);
+                            this.renderAreasList(); // Or a more specific re-render
+                        }
+                    }
+                });
+                document.getElementById('goalForm').addEventListener('submit', this.handleGoalFormSubmit.bind(this));
+                document.getElementById('habitForm').addEventListener('submit', this.handleHabitFormSubmit.bind(this));
+
+                // Habit Tracker View related
+                document.getElementById('habitTrackerAreaSelect').addEventListener('change', this.renderHabitsForTracking.bind(this));
+                document.getElementById('habitsForTrackingList').addEventListener('click', (e) => {
+                    if (e.target.classList.contains('log-habit-btn')) {
+                        const habitId = parseInt(e.target.dataset.habitId);
+                        const habitName = e.target.dataset.habitName;
+                        const date = new Date().toISOString().split('T')[0]; // Today's date
+                        this.openTrackingModal(habitId, habitName, date);
+                    }
+                });
+                document.getElementById('trackingForm').addEventListener('submit', this.handleTrackingFormSubmit.bind(this));
+
+                // Journal
+                document.getElementById('addJournalEntryBtn').addEventListener('click', () => {
+                    document.getElementById('journalEntryForm').reset();
+                    document.getElementById('journalEntryId').value = '';
+                    document.getElementById('journalEntryDate').value = new Date().toISOString().split('T')[0];
+                    document.getElementById('journalEntryModalTitle').textContent = 'New Journal Entry';
+                    this.openModal('journalEntryModal');
+                });
+                document.getElementById('journalEntryForm').addEventListener('submit', this.handleJournalEntryFormSubmit.bind(this));
+
+                // Resources
+                document.getElementById('addResourceBtn').addEventListener('click', async () => {
+                    document.getElementById('resourceForm').reset();
+                    document.getElementById('resourceId').value = '';
+                    document.getElementById('resourceModalTitle').textContent = 'Add New Resource';
+                    await this.populateResourceAreaLinkDropdown();
+                    this.openModal('resourceModal');
+                });
+                document.getElementById('resourceForm').addEventListener('submit', this.handleResourceFormSubmit.bind(this));
+
+                // Settings - Backup/Restore
+                document.getElementById('backupDataBtn').addEventListener('click', this.backupData.bind(this));
+                document.getElementById('restoreDataBtn').addEventListener('click', this.restoreData.bind(this));
+                
+                // Progress View
+                document.getElementById('progressHabitSelect').addEventListener('change', () => {
+                    this.currentCalendarDate = new Date(); // Reset to current month when habit changes
+                    this.renderHabitCalendar();
+                });
+                document.getElementById('prevMonthBtn').addEventListener('click', () => {
+                    this.currentCalendarDate.setMonth(this.currentCalendarDate.getMonth() - 1);
+                    this.renderHabitCalendar();
+                });
+                document.getElementById('nextMonthBtn').addEventListener('click', () => {
+                    this.currentCalendarDate.setMonth(this.currentCalendarDate.getMonth() + 1);
+                    this.renderHabitCalendar();
+                });
+            },
+            
+            // --- Dashboard ---
+            renderDashboard: async function() {
+                try {
+                    const areas = await this.getAllItems(this.OBJECT_STORES.AREAS);
+                    const goals = await this.getAllItems(this.OBJECT_STORES.GOALS);
+                    const habits = await this.getAllItems(this.OBJECT_STORES.HABITS);
+                    
+                    let summary = `You are focusing on ${areas.length} area(s), with ${goals.length} goal(s) and ${habits.length} habit(s) defined. Keep up the noble effort!`;
+                    document.getElementById('dashboard-summary').textContent = summary;
+
+                    // Today's habits
+                    const todayHabitsList = document.getElementById('today-habits-list');
+                    todayHabitsList.innerHTML = ''; // Clear previous
+                    const today = new Date().toISOString().split('T')[0];
+                    
+                    if (habits.length === 0) {
+                        todayHabitsList.innerHTML = '<p class="empty-state" style="padding:1rem; font-size:0.9rem;">No habits defined yet. Add some habits in the "Areas of Focus" section!</p>';
+                    } else {
+                        for (const habit of habits) {
+                            const log = await this.getItemByIndex(this.OBJECT_STORES.TRACKING_LOGS, 'habitId_date', [habit.id, today]);
+                            const li = document.createElement('li');
+                            li.className = 'list-item';
+                            li.innerHTML = `
+                                <div class="list-item-content">
+                                    <strong>${habit.name}</strong>
+                                    <small style="display:block; color: var(--text-secondary-color);">${habit.frequency}</small>
+                                </div>
+                                <div class="list-item-actions">
+                                    ${log ? `<span style="color: var(--${log.status === 'done' ? 'success' : log.status === 'partial' ? 'warning' : 'danger'}-color); text-transform:capitalize;">${log.status.replace('_', ' ')}</span>` : 
+                                    `<button class="btn btn-small log-habit-btn-dashboard" data-habit-id="${habit.id}" data-habit-name="${this.escapeHtml(habit.name)}"><i class="fas fa-check-circle"></i> Log</button>`}
+                                </div>
+                            `;
+                            todayHabitsList.appendChild(li);
+                        }
+                         // Add event listeners for these new buttons
+                        document.querySelectorAll('.log-habit-btn-dashboard').forEach(btn => {
+                            btn.addEventListener('click', (e) => {
+                                const habitId = parseInt(e.currentTarget.dataset.habitId);
+                                const habitName = e.currentTarget.dataset.habitName;
+                                this.openTrackingModal(habitId, habitName, today);
+                            });
+                        });
+                    }
+
+                    // Motivational Quote
+                    const resources = await this.getAllItems(this.OBJECT_STORES.RESOURCES);
+                    if (resources.length > 0) {
+                        const randomResource = resources[Math.floor(Math.random() * resources.length)];
+                        document.getElementById('motivational-quote-display').innerHTML = `
+                            <p>"${this.escapeHtml(randomResource.text)}"</p>
+                            <small style="color: var(--text-secondary-color); display:block; text-align:right;"><em>- ${this.escapeHtml(randomResource.source || 'Anonymous')}</em></small>
+                        `;
+                    } else {
+                        document.getElementById('motivational-quote-display').textContent = "Add some motivational resources in the 'Resources' section for a daily spark!";
+                    }
+
+                } catch (error) {
+                    console.error("Error rendering dashboard:", error);
+                    document.getElementById('dashboard-summary').textContent = "Could not load dashboard data.";
+                }
+            },
+
+            // --- Areas of Focus ---
+            handleAreaFormSubmit: async function(e) {
+                e.preventDefault();
+                const id = document.getElementById('areaId').value;
+                const name = document.getElementById('areaName').value.trim();
+                const description = document.getElementById('areaDescription').value.trim();
+
+                if (!name) {
+                    alert("Area name is required.");
+                    return;
+                }
+
+                const areaData = { name, description, createdAt: new Date().toISOString() };
+                try {
+                    if (id) { // Update
+                        areaData.id = parseInt(id);
+                        await this.updateItem(this.OBJECT_STORES.AREAS, areaData);
+                    } else { // Add
+                        await this.addItem(this.OBJECT_STORES.AREAS, areaData);
+                    }
+                    this.closeModal('areaModal');
+                    this.renderAreasList();
+                    this.renderHabitsForTracking(); // Update dropdowns
+                } catch (error) {
+                    console.error("Error saving area:", error);
+                    alert("Error saving area: " + error.message);
+                }
+            },
+
+                        renderAreasList: async function() {
+                const areasListDiv = document.getElementById('areasList');
+                areasListDiv.innerHTML = ''; // Clear previous list
+                try {
+                    const areas = await this.getAllItems(this.OBJECT_STORES.AREAS);
+                    if (areas.length === 0) {
+                        areasListDiv.innerHTML = '<p class="empty-state"><i class="fas fa-compass"></i>No areas of focus defined yet. Click "Add New Area" to start your path.</p>';
+                        return;
+                    }
+                    const ul = document.createElement('ul');
+                    for (const area of areas.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))) {
+                        const li = document.createElement('li');
+                        li.className = 'list-item card'; // Use card style for areas
+                        li.innerHTML = `
+                            <div class="list-item-content">
+                                <h3 style="margin-top:0; color:var(--accent-color);">${this.escapeHtml(area.name)}</h3>
+                                <p style="color: var(--text-secondary-color); font-size: 0.9em;">${this.escapeHtml(area.description || 'No description.')}</p>
+                                
+                                <!-- Goals for this area -->
+                                <div id="goalsForArea-${area.id}" class="pathway-decoration" style="margin-top:1rem;"></div>
+                                <button class="btn btn-small add-goal-btn" data-area-id="${area.id}" style="margin-top:0.5rem;"><i class="fas fa-bullseye"></i> Add Goal</button>
+                                
+                                <!-- Habits for this area (not linked to a specific goal) -->
+                                <div id="generalHabitsForArea-${area.id}" class="pathway-decoration" style="margin-top:1rem;"></div>
+                                <button class="btn btn-small add-habit-btn" data-area-id="${area.id}" style="margin-top:0.5rem;"><i class="fas fa-shoe-prints"></i> Add General Habit</button>
+                            </div>
+                            <div class="list-item-actions" style="margin-top:1rem; border-top:1px solid var(--border-color); padding-top:1rem;">
+                                <button class="btn btn-small btn-secondary edit-area-btn" data-id="${area.id}"><i class="fas fa-edit"></i> Edit Area</button>
+                                <button class="btn btn-small btn-danger delete-area-btn" data-id="${area.id}"><i class="fas fa-trash"></i> Delete Area</button>
+                            </div>
+                        `;
+                        ul.appendChild(li);
+                        
+                        // Get direct references to the divs within the newly created li
+                        const goalsDivElement = li.querySelector(`#goalsForArea-${area.id}`);
+                        const generalHabitsDivElement = li.querySelector(`#generalHabitsForArea-${area.id}`);
+                        
+                        // Render goals and habits for this area, passing the container elements
+                        if (goalsDivElement) {
+                            await this.renderGoalsForArea(area.id, goalsDivElement);
+                        } else {
+                            console.error(`Could not find goalsDivElement for area ${area.id} within its li.`);
+                        }
+                        if (generalHabitsDivElement) {
+                            await this.renderGeneralHabitsForArea(area.id, generalHabitsDivElement);
+                        } else {
+                            console.error(`Could not find generalHabitsDivElement for area ${area.id} within its li.`);
+                        }
+                    }
+                    areasListDiv.appendChild(ul);
+
+                    // Attach event listeners for edit/delete area buttons
+                    ul.querySelectorAll('.edit-area-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const areaId = parseInt(e.currentTarget.dataset.id);
+                            const area = await this.getItem(this.OBJECT_STORES.AREAS, areaId);
+                            if (area) {
+                                document.getElementById('areaForm').reset();
+                                document.getElementById('areaId').value = area.id;
+                                document.getElementById('areaName').value = area.name;
+                                document.getElementById('areaDescription').value = area.description || '';
+                                document.getElementById('areaModalTitle').textContent = 'Edit Area';
+                                this.openModal('areaModal');
+                            }
+                        });
+                    });
+                    ul.querySelectorAll('.delete-area-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const areaId = parseInt(e.currentTarget.dataset.id);
+                            if (confirm('Are you sure you want to delete this area and ALL its related goals, habits, and tracking logs? This action cannot be undone.')) {
+                                await this.deleteAreaAndRelatedData(areaId);
+                                this.renderAreasList();
+                                this.renderHabitsForTracking(); // Update dropdowns
+                            }
+                        });
+                    });
+
+                } catch (error) {
+                    console.error("Error rendering areas list:", error);
+                    areasListDiv.innerHTML = '<p class="empty-state" style="color:var(--danger-color);">Could not load areas.</p>';
+                }
+            },
+
+            deleteAreaAndRelatedData: async function(areaId) {
+                try {
+                    // Delete habits and their tracking logs first
+                    const habits = await this.getItemsByIndex(this.OBJECT_STORES.HABITS, 'areaId', areaId);
+                    for (const habit of habits) {
+                        await this.deleteHabitAndTrackingLogs(habit.id);
+                    }
+                    // Delete goals (habits linked to goals are already deleted if habit.areaId was set)
+                    const goals = await this.getItemsByIndex(this.OBJECT_STORES.GOALS, 'areaId', areaId);
+                    for (const goal of goals) {
+                        await this.deleteItem(this.OBJECT_STORES.GOALS, goal.id);
+                    }
+                    // Delete the area itself
+                    await this.deleteItem(this.OBJECT_STORES.AREAS, areaId);
+                    // Unlink resources
+                    const resources = await this.getItemsByIndex(this.OBJECT_STORES.RESOURCES, 'areaId', areaId);
+                    for (const resource of resources) {
+                        resource.areaId = null; // or delete if preferred
+                        await this.updateItem(this.OBJECT_STORES.RESOURCES, resource);
+                    }
+                } catch (error) {
+                    console.error(`Error deleting area ${areaId} and related data:`, error);
+                    alert("Error deleting area: " + error.message);
+                }
+            },
+
+            // --- Goals (within Areas) ---
+            handleGoalFormSubmit: async function(e) {
+                e.preventDefault();
+                const id = document.getElementById('goalId').value;
+                const areaId = parseInt(document.getElementById('goalAreaId').value);
+                const title = document.getElementById('goalTitle').value.trim();
+                const description = document.getElementById('goalDescription').value.trim();
+                const targetDate = document.getElementById('goalTargetDate').value;
+                const isAchieved = document.getElementById('goalIsAchieved').checked;
+
+                if (!title || !areaId) {
+                    alert("Goal title and associated area are required.");
+                    return;
+                }
+
+                const goalData = { areaId, title, description, targetDate, isAchieved, createdAt: new Date().toISOString() };
+                try {
+                    if (id) { // Update
+                        goalData.id = parseInt(id);
+                        await this.updateItem(this.OBJECT_STORES.GOALS, goalData);
+                    } else { // Add
+                        await this.addItem(this.OBJECT_STORES.GOALS, goalData);
+                    }
+                    this.closeModal('goalModal');
+                    this.renderAreasList(); // Re-render areas to show updated goals
+                } catch (error) {
+                    console.error("Error saving goal:", error);
+                    alert("Error saving goal: " + error.message);
+                }
+            },
+
+            renderGoalsForArea: async function(areaId, goalsDiv) { // Added goalsDiv parameter
+                // const goalsDiv = document.getElementById(`goalsForArea-${areaId}`); // This line is removed/replaced
+                if (!goalsDiv) {
+                    console.error(`renderGoalsForArea: The provided goalsDiv element for areaId ${areaId} is null or undefined.`);
+                    return;
+                }
+                goalsDiv.innerHTML = '<h4><i class="fas fa-bullseye"></i> Goals:</h4>';
+                const goals = await this.getItemsByIndex(this.OBJECT_STORES.GOALS, 'areaId', areaId);
+                
+                if (goals.length === 0) {
+                    goalsDiv.innerHTML += '<p style="font-size:0.9em; color:var(--text-secondary-color);">No goals set for this area yet.</p>';
+                    return;
+                }
+                const ul = document.createElement('ul');
+                for (const goal of goals.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))) {
+                    const li = document.createElement('li');
+                    li.className = 'goal-item pathway-decoration-dot';
+                    li.style.backgroundColor = 'rgba(0,0,0,0.1)'; 
+                    li.style.padding = '0.75rem'; 
+                    li.style.borderRadius = '4px';
+                    li.style.marginBottom = '0.5rem';
+                    const achievedText = goal.isAchieved ? '<span style="color:var(--success-color);">(Achieved <i class="fas fa-check-circle"></i>)</span>' : '';
+                    li.innerHTML = `
+                        <div class="list-item-content">
+                            <strong>${this.escapeHtml(goal.title)} ${achievedText}</strong>
+                            ${goal.description ? `<p style="font-size:0.85em; color:var(--text-secondary-color);">${this.escapeHtml(goal.description)}</p>` : ''}
+                            ${goal.targetDate ? `<small style="display:block; color:var(--text-secondary-color);">Target: ${new Date(goal.targetDate).toLocaleDateString()}</small>` : ''}
+                            
+                            <!-- Habits for this goal -->
+                            <div id="habitsForGoal-${goal.id}" class="pathway-decoration" style="margin-top:0.5rem; margin-left:15px;"></div>
+                            <button class="btn btn-small add-habit-btn" data-area-id="${areaId}" data-goal-id="${goal.id}" style="font-size:0.7rem; padding:0.3rem 0.6rem; margin-top:0.3rem;"><i class="fas fa-plus"></i> Add Habit to this Goal</button>
+                        </div>
+                        <div class="list-item-actions" style="margin-top:0.5rem;">
+                            <button class="btn btn-small btn-secondary edit-goal-btn" data-goal-id="${goal.id}"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-small btn-danger delete-goal-btn" data-goal-id="${goal.id}"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                    ul.appendChild(li);
+                    // For renderHabitsForGoal, we also need to ensure its target div is found correctly
+                    const habitsForGoalDiv = li.querySelector(`#habitsForGoal-${goal.id}`);
+                    if (habitsForGoalDiv) {
+                         await this.renderHabitsForGoal(goal.id, areaId, habitsForGoalDiv);
+                    } else {
+                        console.error(`Could not find habitsForGoalDiv for goal ${goal.id} within its li.`);
+                    }
+                }
+                goalsDiv.appendChild(ul);
+            },
+            
+            deleteGoalAndRelatedData: async function(goalId) {
+                try {
+                    // Delete habits linked to this goal and their tracking logs
+                    const habits = await this.getItemsByIndex(this.OBJECT_STORES.HABITS, 'goalId', goalId);
+                    for (const habit of habits) {
+                        await this.deleteHabitAndTrackingLogs(habit.id);
+                    }
+                    // Delete the goal itself
+                    await this.deleteItem(this.OBJECT_STORES.GOALS, goalId);
+                } catch (error) {
+                    console.error(`Error deleting goal ${goalId} and related data:`, error);
+                    alert("Error deleting goal: " + error.message);
+                }
+            },
+
+            // --- Habits (within Areas/Goals) ---
+            handleHabitFormSubmit: async function(e) {
+                e.preventDefault();
+                const id = document.getElementById('habitId').value;
+                const areaId = parseInt(document.getElementById('habitAreaId').value);
+                const goalIdValue = document.getElementById('habitGoalId').value;
+                const goalId = goalIdValue ? parseInt(goalIdValue) : null;
+                const name = document.getElementById('habitName').value.trim();
+                const frequency = document.getElementById('habitFrequency').value.trim();
+
+                if (!name || !areaId) {
+                    alert("Habit name and associated area are required.");
+                    return;
+                }
+
+                const habitData = { areaId, goalId, name, frequency, createdAt: new Date().toISOString() };
+                try {
+                    if (id) { // Update
+                        habitData.id = parseInt(id);
+                        await this.updateItem(this.OBJECT_STORES.HABITS, habitData);
+                    } else { // Add
+                        await this.addItem(this.OBJECT_STORES.HABITS, habitData);
+                    }
+                    this.closeModal('habitModal');
+                    this.renderAreasList(); // Re-render areas to show updated habits
+                    this.renderHabitsForTracking(); // Update habits view
+                    this.renderProgressView(); // Update progress view dropdowns
+                } catch (error) {
+                    console.error("Error saving habit:", error);
+                    alert("Error saving habit: " + error.message);
+                }
+            },
+
+            renderGeneralHabitsForArea: async function(areaId, habitsDiv) { // Added habitsDiv parameter
+                // const habitsDiv = document.getElementById(`generalHabitsForArea-${areaId}`); // This line is removed/replaced
+                if (!habitsDiv) {
+                    console.error(`renderGeneralHabitsForArea: The provided habitsDiv element for areaId ${areaId} is null or undefined.`);
+                    return;
+                }
+                habitsDiv.innerHTML = '<h4><i class="fas fa-shoe-prints"></i> General Habits:</h4>';
+                const allHabitsInArea = await this.getItemsByIndex(this.OBJECT_STORES.HABITS, 'areaId', areaId);
+                const generalHabits = allHabitsInArea.filter(h => !h.goalId); // Filter for habits with no goalId
+
+                if (generalHabits.length === 0) {
+                    habitsDiv.innerHTML += '<p style="font-size:0.9em; color:var(--text-secondary-color);">No general habits set for this area yet.</p>';
+                    return;
+                }
+                // Pass the habitsDiv to _renderHabitList, or ensure _renderHabitList appends to the passed div
+                this._renderHabitList(generalHabits, habitsDiv, areaId); 
+            },
+            
+            renderHabitsForGoal: async function(goalId, areaId, habitsDiv) { // Added habitsDiv parameter
+                // const habitsDiv = document.getElementById(`habitsForGoal-${goalId}`); // This line is removed/replaced
+                if (!habitsDiv) {
+                    console.error(`renderHabitsForGoal: The provided habitsDiv for goalId ${goalId} is null or undefined.`);
+                    return;
+                }
+                habitsDiv.innerHTML = '<h5><i class="fas fa-shoe-prints"></i> Habits for this goal:</h5>';
+                const habits = await this.getItemsByIndex(this.OBJECT_STORES.HABITS, 'goalId', goalId);
+                
+                if (habits.length === 0) {
+                    habitsDiv.innerHTML += '<p style="font-size:0.8em; color:var(--text-secondary-color);">No habits specifically for this goal.</p>';
+                    return;
+                }
+                this._renderHabitList(habits, habitsDiv, areaId);
+            },
+
+            _renderHabitList: function(habits, parentDiv, areaId) { // Helper for rendering habit lists
+                const ul = document.createElement('ul');
+                for (const habit of habits.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))) {
+                    const li = document.createElement('li');
+                    li.className = 'habit-item pathway-decoration-dot';
+                    li.style.backgroundColor = 'rgba(0,0,0,0.05)'; 
+                    li.style.padding = '0.5rem'; 
+                    li.style.borderRadius = '4px';
+                    li.style.marginBottom = '0.3rem';
+                    li.innerHTML = `
+                        <div class="list-item-content">
+                            <strong>${this.escapeHtml(habit.name)}</strong>
+                            ${habit.frequency ? `<small style="display:block; color:var(--text-secondary-color);">${this.escapeHtml(habit.frequency)}</small>` : ''}
+                        </div>
+                        <div class="list-item-actions">
+                            <button class="btn btn-small btn-secondary edit-habit-btn" data-habit-id="${habit.id}" data-area-id="${areaId}"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-small btn-danger delete-habit-btn" data-habit-id="${habit.id}"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                    ul.appendChild(li);
+                }
+                parentDiv.appendChild(ul);
+            },
+            
+            deleteHabitAndTrackingLogs: async function(habitId) {
+                try {
+                    // Delete tracking logs for this habit
+                    const logs = await this.getItemsByIndex(this.OBJECT_STORES.TRACKING_LOGS, 'habitId', habitId);
+                    for (const log of logs) {
+                        await this.deleteItem(this.OBJECT_STORES.TRACKING_LOGS, log.id);
+                    }
+                    // Delete the habit itself
+                    await this.deleteItem(this.OBJECT_STORES.HABITS, habitId);
+                } catch (error) {
+                    console.error(`Error deleting habit ${habitId} and its logs:`, error);
+                    alert("Error deleting habit: " + error.message);
+                }
+            },
+
+            // --- Habits & Tracking View ---
+            renderHabitsForTracking: async function() {
+                const areaSelect = document.getElementById('habitTrackerAreaSelect');
+                const habitsListDiv = document.getElementById('habitsForTrackingList');
+                habitsListDiv.innerHTML = '';
+                
+                // Populate area select
+                const currentSelectedAreaId = areaSelect.value;
+                areaSelect.innerHTML = '<option value="">-- Select an Area --</option>';
+                const areas = await this.getAllItems(this.OBJECT_STORES.AREAS);
+                if (areas.length === 0) {
+                    habitsListDiv.innerHTML = '<p class="empty-state"><i class="fas fa-filter"></i>Select an area to see its habits, or define areas and habits first.</p>';
+                    return;
+                }
+                areas.forEach(area => {
+                    const option = document.createElement('option');
+                    option.value = area.id;
+                    option.textContent = area.name;
+                    if (area.id == currentSelectedAreaId) option.selected = true;
+                    areaSelect.appendChild(option);
+                });
+
+                const selectedAreaId = parseInt(areaSelect.value);
+                if (!selectedAreaId) {
+                    habitsListDiv.innerHTML = '<p class="empty-state"><i class="fas fa-filter"></i>Select an area to view its habits.</p>';
+                    return;
+                }
+
+                const habits = await this.getItemsByIndex(this.OBJECT_STORES.HABITS, 'areaId', selectedAreaId);
+                if (habits.length === 0) {
+                    habitsListDiv.innerHTML = '<p class="empty-state"><i class="fas fa-shoe-prints"></i>No habits defined for this area yet.</p>';
+                    return;
+                }
+
+                const ul = document.createElement('ul');
+                const today = new Date().toISOString().split('T')[0];
+                for (const habit of habits.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))) {
+                    const log = await this.getItemByIndex(this.OBJECT_STORES.TRACKING_LOGS, 'habitId_date', [habit.id, today]);
+                    const li = document.createElement('li');
+                    li.className = 'list-item';
+                    li.innerHTML = `
+                        <div class="list-item-content">
+                            <strong>${this.escapeHtml(habit.name)}</strong>
+                            <small style="display:block; color: var(--text-secondary-color);">${this.escapeHtml(habit.frequency)}</small>
+                            ${log ? `<span style="font-size:0.9em; color: var(--${log.status === 'done' ? 'success' : log.status === 'partial' ? 'warning' : 'danger'}-color);">Logged today: ${log.status.replace('_', ' ')}</span>` : ''}
+                        </div>
+                        <div class="list-item-actions">
+                            <button class="btn btn-small log-habit-btn" data-habit-id="${habit.id}" data-habit-name="${this.escapeHtml(habit.name)}">
+                                <i class="fas fa-calendar-check"></i> ${log ? 'Update Log' : 'Log for Today'}
+                            </button>
+                        </div>
+                    `;
+                    ul.appendChild(li);
+                }
+                habitsListDiv.appendChild(ul);
+            },
+
+            openTrackingModal: async function(habitId, habitName, date) {
+                document.getElementById('trackingForm').reset();
+                document.getElementById('trackingHabitId').value = habitId;
+                document.getElementById('trackingHabitName').textContent = this.escapeHtml(habitName);
+                document.getElementById('trackingDate').textContent = new Date(date + 'T00:00:00').toLocaleDateString(); // Ensure correct date display
+                document.getElementById('trackingLogDate').value = date;
+
+                // Check if a log already exists for this habit and date
+                const existingLog = await this.getItemByIndex(this.OBJECT_STORES.TRACKING_LOGS, 'habitId_date', [habitId, date]);
+                if (existingLog) {
+                    document.getElementById('trackingStatus').value = existingLog.status;
+                    document.getElementById('trackingReflection').value = existingLog.reflection || '';
+                }
+                
+                this.openModal('trackingModal');
+            },
+
+            handleTrackingFormSubmit: async function(e) {
+                e.preventDefault();
+                const habitId = parseInt(document.getElementById('trackingHabitId').value);
+                const date = document.getElementById('trackingLogDate').value;
+                const status = document.getElementById('trackingStatus').value;
+                const reflection = document.getElementById('trackingReflection').value.trim();
+
+                const logData = { habitId, date, status, reflection, loggedAt: new Date().toISOString() };
+                
+                try {
+                    // Check if log exists to update, otherwise add
+                    const existingLog = await this.getItemByIndex(this.OBJECT_STORES.TRACKING_LOGS, 'habitId_date', [habitId, date]);
+                    if (existingLog) {
+                        logData.id = existingLog.id; // Preserve ID for update
+                        await this.updateItem(this.OBJECT_STORES.TRACKING_LOGS, logData);
+                    } else {
+                        await this.addItem(this.OBJECT_STORES.TRACKING_LOGS, logData);
+                    }
+                    this.closeModal('trackingModal');
+                    // Re-render relevant views
+                    if (this.currentView === 'habits') this.renderHabitsForTracking();
+                    if (this.currentView === 'dashboard') this.renderDashboard();
+                    if (this.currentView === 'progress') this.renderHabitCalendar(); // If this habit is selected
+                } catch (error) {
+                    console.error("Error saving tracking log:", error);
+                    if (error.name === 'ConstraintError') {
+                        alert("A tracking log for this habit on this date already exists. The system tried to add a duplicate. If you intended to update, please try again. This might be an internal issue.");
+                    } else {
+                        alert("Error saving tracking log: " + error.message);
+                    }
+                }
+            },
+
+            // --- Journal ---
+            handleJournalEntryFormSubmit: async function(e) {
+                e.preventDefault();
+                const id = document.getElementById('journalEntryId').value;
+                const date = document.getElementById('journalEntryDate').value;
+                const content = document.getElementById('journalEntryContent').value.trim();
+
+                if (!date || !content) {
+                    alert("Date and content are required for a journal entry.");
+                    return;
+                }
+
+                const entryData = { date, content, modifiedAt: new Date().toISOString() };
+                try {
+                    if (id) { // Update
+                        entryData.id = parseInt(id);
+                        // Retain original createdAt if it exists, or set if new
+                        const existingEntry = await this.getItem(this.OBJECT_STORES.JOURNAL_ENTRIES, entryData.id);
+                        entryData.createdAt = existingEntry.createdAt || new Date().toISOString();
+                        await this.updateItem(this.OBJECT_STORES.JOURNAL_ENTRIES, entryData);
+                    } else { // Add
+                        entryData.createdAt = new Date().toISOString();
+                        await this.addItem(this.OBJECT_STORES.JOURNAL_ENTRIES, entryData);
+                    }
+                    this.closeModal('journalEntryModal');
+                    this.renderJournalEntriesList();
+                } catch (error) {
+                    console.error("Error saving journal entry:", error);
+                    alert("Error saving journal entry: " + error.message);
+                }
+            },
+
+            renderJournalEntriesList: async function() {
+                const listDiv = document.getElementById('journalEntriesList');
+                listDiv.innerHTML = '';
+                try {
+                    const entries = await this.getAllItems(this.OBJECT_STORES.JOURNAL_ENTRIES);
+                    if (entries.length === 0) {
+                        listDiv.innerHTML = '<p class="empty-state"><i class="fas fa-feather-alt"></i>Your journal is empty. Start reflecting by adding a new entry.</p>';
+                        return;
+                    }
+                    const ul = document.createElement('ul');
+                    // Sort by date, most recent first
+                    entries.sort((a, b) => new Date(b.date) - new Date(a.date) || new Date(b.createdAt) - new Date(a.createdAt));
+
+                    for (const entry of entries) {
+                        const li = document.createElement('li');
+                        li.className = 'list-item card';
+                        li.innerHTML = `
+                            <div class="list-item-content">
+                                <h4 style="color:var(--accent-color);">${new Date(entry.date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
+                                <p style="white-space: pre-wrap; max-height: 100px; overflow: hidden; text-overflow: ellipsis;">${this.escapeHtml(entry.content.substring(0,200))}${entry.content.length > 200 ? '...' : ''}</p>
+                                <small style="color:var(--text-secondary-color);">Last modified: ${new Date(entry.modifiedAt).toLocaleString()}</small>
+                            </div>
+                            <div class="list-item-actions">
+                                <button class="btn btn-small view-journal-btn" data-id="${entry.id}"><i class="fas fa-eye"></i> View/Edit</button>
+                                <button class="btn btn-small btn-danger delete-journal-btn" data-id="${entry.id}"><i class="fas fa-trash"></i> Delete</button>
+                            </div>
+                        `;
+                        ul.appendChild(li);
+                    }
+                    listDiv.appendChild(ul);
+
+                    ul.querySelectorAll('.view-journal-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const entryId = parseInt(e.currentTarget.dataset.id);
+                            const entry = await this.getItem(this.OBJECT_STORES.JOURNAL_ENTRIES, entryId);
+                            if (entry) {
+                                document.getElementById('journalEntryForm').reset();
+                                document.getElementById('journalEntryId').value = entry.id;
+                                document.getElementById('journalEntryDate').value = entry.date;
+                                document.getElementById('journalEntryContent').value = entry.content;
+                                document.getElementById('journalEntryModalTitle').textContent = 'View/Edit Journal Entry';
+                                this.openModal('journalEntryModal');
+                            }
+                        });
+                    });
+                    ul.querySelectorAll('.delete-journal-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const entryId = parseInt(e.currentTarget.dataset.id);
+                            if (confirm('Are you sure you want to delete this journal entry?')) {
+                                await this.deleteItem(this.OBJECT_STORES.JOURNAL_ENTRIES, entryId);
+                                this.renderJournalEntriesList();
+                            }
+                        });
+                    });
+
+                } catch (error) {
+                    console.error("Error rendering journal entries:", error);
+                    listDiv.innerHTML = '<p class="empty-state" style="color:var(--danger-color);">Could not load journal entries.</p>';
+                }
+            },
+
+            // --- Resources ---
+            populateResourceAreaLinkDropdown: async function() {
+                const select = document.getElementById('resourceAreaLink');
+                select.innerHTML = '<option value="">None</option>'; // Default option
+                const areas = await this.getAllItems(this.OBJECT_STORES.AREAS);
+                areas.forEach(area => {
+                    const option = document.createElement('option');
+                    option.value = area.id;
+                    option.textContent = area.name;
+                    select.appendChild(option);
+                });
+            },
+
+            handleResourceFormSubmit: async function(e) {
+                e.preventDefault();
+                const id = document.getElementById('resourceId').value;
+                const text = document.getElementById('resourceText').value.trim();
+                const source = document.getElementById('resourceSource').value.trim();
+                const areaIdValue = document.getElementById('resourceAreaLink').value;
+                const areaId = areaIdValue ? parseInt(areaIdValue) : null;
+                const notes = document.getElementById('resourceNotes').value.trim();
+
+                if (!text) {
+                    alert("Resource text is required.");
+                    return;
+                }
+
+                const resourceData = { text, source, areaId, notes, createdAt: new Date().toISOString() };
+                try {
+                    if (id) { // Update
+                        resourceData.id = parseInt(id);
+                        await this.updateItem(this.OBJECT_STORES.RESOURCES, resourceData);
+                    } else { // Add
+                        await this.addItem(this.OBJECT_STORES.RESOURCES, resourceData);
+                    }
+                    this.closeModal('resourceModal');
+                    this.renderResourcesList();
+                    if (this.currentView === 'dashboard') this.renderDashboard(); // Update motivational quote
+                } catch (error) {
+                    console.error("Error saving resource:", error);
+                    alert("Error saving resource: " + error.message);
+                }
+            },
+
+            renderResourcesList: async function() {
+                const listDiv = document.getElementById('resourcesList');
+                listDiv.innerHTML = '';
+                try {
+                    const resources = await this.getAllItems(this.OBJECT_STORES.RESOURCES);
+                    if (resources.length === 0) {
+                        listDiv.innerHTML = '<p class="empty-state"><i class="fas fa-book-reader"></i>No motivational resources added yet. Add some Ayahs, Hadith, or quotes!</p>';
+                        return;
+                    }
+                    const ul = document.createElement('ul');
+                    const areas = await this.getAllItems(this.OBJECT_STORES.AREAS); // For linking names
+                    const areaMap = new Map(areas.map(area => [area.id, area.name]));
+
+                    for (const resource of resources.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))) {
+                        const li = document.createElement('li');
+                        li.className = 'list-item card';
+                        const areaName = resource.areaId ? areaMap.get(resource.areaId) : 'None';
+                        li.innerHTML = `
+                            <div class="list-item-content">
+                                <p style="font-style: italic; font-size: 1.1em;">"${this.escapeHtml(resource.text)}"</p>
+                                <small style="color:var(--text-secondary-color); display:block;"><strong>Source:</strong> ${this.escapeHtml(resource.source || 'N/A')}</small>
+                                ${resource.notes ? `<p style="font-size:0.9em;"><strong>Notes:</strong> ${this.escapeHtml(resource.notes)}</p>` : ''}
+                                <small style="color:var(--text-secondary-color); display:block;"><strong>Linked Area:</strong> ${this.escapeHtml(areaName || 'N/A')}</small>
+                            </div>
+                            <div class="list-item-actions">
+                                <button class="btn btn-small btn-secondary edit-resource-btn" data-id="${resource.id}"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-small btn-danger delete-resource-btn" data-id="${resource.id}"><i class="fas fa-trash"></i> Delete</button>
+                            </div>
+                        `;
+                        ul.appendChild(li);
+                    }
+                    listDiv.appendChild(ul);
+
+                    ul.querySelectorAll('.edit-resource-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const resourceId = parseInt(e.currentTarget.dataset.id);
+                            const resource = await this.getItem(this.OBJECT_STORES.RESOURCES, resourceId);
+                            if (resource) {
+                                document.getElementById('resourceForm').reset();
+                                document.getElementById('resourceId').value = resource.id;
+                                document.getElementById('resourceText').value = resource.text;
+                                document.getElementById('resourceSource').value = resource.source || '';
+                                await this.populateResourceAreaLinkDropdown(); // Repopulate before setting value
+                                document.getElementById('resourceAreaLink').value = resource.areaId || '';
+                                document.getElementById('resourceNotes').value = resource.notes || '';
+                                document.getElementById('resourceModalTitle').textContent = 'Edit Resource';
+                                this.openModal('resourceModal');
+                            }
+                        });
+                    });
+                    ul.querySelectorAll('.delete-resource-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const resourceId = parseInt(e.currentTarget.dataset.id);
+                            if (confirm('Are you sure you want to delete this resource?')) {
+                                await this.deleteItem(this.OBJECT_STORES.RESOURCES, resourceId);
+                                this.renderResourcesList();
+                                if (this.currentView === 'dashboard') this.renderDashboard(); // Update motivational quote
+                            }
+                        });
+                    });
+
+                } catch (error) {
+                    console.error("Error rendering resources list:", error);
+                    listDiv.innerHTML = '<p class="empty-state" style="color:var(--danger-color);">Could not load resources.</p>';
+                }
+            },
+
+            // --- Progress View ---
+            renderProgressView: async function() {
+                await this.populateProgressHabitSelect();
+                this.currentCalendarDate = new Date(); // Reset to current month
+                await this.renderHabitCalendar();
+                await this.renderGoalProgressBars();
+            },
+
+            populateProgressHabitSelect: async function() {
+                const select = document.getElementById('progressHabitSelect');
+                const currentSelectedHabitId = select.value;
+                select.innerHTML = '<option value="">-- Select a Habit --</option>';
+                const habits = await this.getAllItems(this.OBJECT_STORES.HABITS);
+                if (habits.length === 0) return;
+
+                for (const habit of habits) {
+                    const area = await this.getItem(this.OBJECT_STORES.AREAS, habit.areaId);
+                    const option = document.createElement('option');
+                    option.value = habit.id;
+                    option.textContent = `${area ? area.name + ' - ' : ''}${habit.name}`;
+                    if (habit.id == currentSelectedHabitId) option.selected = true;
+                    select.appendChild(option);
+                }
+            },
+
+            renderHabitCalendar: async function() {
+                const calendarDiv = document.getElementById('habitCalendar');
+                const habitId = parseInt(document.getElementById('progressHabitSelect').value);
+                const habitNameEl = document.getElementById('calendarHabitName');
+                const monthYearEl = document.getElementById('currentMonthYear');
+
+                calendarDiv.innerHTML = ''; // Clear previous calendar
+                habitNameEl.textContent = '';
+
+                if (!habitId) {
+                    calendarDiv.innerHTML = '<p class="empty-state" style="padding:1rem;">Select a habit to view its calendar.</p>';
+                    monthYearEl.textContent = '';
+                    return;
+                }
+
+                const habit = await this.getItem(this.OBJECT_STORES.HABITS, habitId);
+                if (habit) habitNameEl.textContent = `Calendar for: ${this.escapeHtml(habit.name)}`;
+
+                const year = this.currentCalendarDate.getFullYear();
+                const month = this.currentCalendarDate.getMonth(); // 0-indexed
+                monthYearEl.textContent = this.currentCalendarDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0 for Sunday, 1 for Monday...
+
+                const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                dayHeaders.forEach(header => {
+                    const dayCell = document.createElement('div');
+                    dayCell.classList.add('calendar-day', 'header');
+                    dayCell.textContent = header;
+                    calendarDiv.appendChild(dayCell);
+                });
+
+                for (let i = 0; i < firstDayOfMonth; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.classList.add('calendar-day', 'empty');
+                    calendarDiv.appendChild(emptyCell);
+                }
+
+                const logs = await this.getItemsByIndex(this.OBJECT_STORES.TRACKING_LOGS, 'habitId', habitId);
+                const logsMap = new Map();
+                logs.forEach(log => {
+                    // Only consider logs for the current month and year
+                    const logDate = new Date(log.date + 'T00:00:00'); // Ensure local timezone interpretation
+                    if (logDate.getFullYear() === year && logDate.getMonth() === month) {
+                         logsMap.set(log.date, log.status);
+                    }
+                });
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayCell = document.createElement('div');
+                    dayCell.classList.add('calendar-day');
+                    dayCell.textContent = day;
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    dayCell.dataset.date = dateStr;
+                    dayCell.dataset.habitId = habitId;
+
+                    if (logsMap.has(dateStr)) {
+                        dayCell.classList.add(logsMap.get(dateStr)); // done, partial, missed
+                    }
+                    
+                    // Add click listener to log/update for this day
+                    dayCell.addEventListener('click', async (e) => {
+                        const clickedDate = e.currentTarget.dataset.date;
+                        const clickedHabitId = parseInt(e.currentTarget.dataset.habitId);
+                        const habitForLog = await this.getItem(this.OBJECT_STORES.HABITS, clickedHabitId);
+                        if (habitForLog) {
+                            this.openTrackingModal(clickedHabitId, habitForLog.name, clickedDate);
+                        }
+                    });
+                    calendarDiv.appendChild(dayCell);
+                }
+            },
+            
+            renderGoalProgressBars: async function() {
+                const container = document.getElementById('goalProgressContainer');
+                container.innerHTML = '';
+                const goals = await this.getAllItems(this.OBJECT_STORES.GOALS);
+                if (goals.length === 0) {
+                    container.innerHTML = '<p class="empty-state" style="padding:1rem;">No goals defined yet to track progress.</p>';
+                    return;
+                }
+
+                for (const goal of goals.filter(g => !g.isAchieved)) { // Only show non-achieved goals
+                    const area = await this.getItem(this.OBJECT_STORES.AREAS, goal.areaId);
+                    const habitsForGoal = await this.getItemsByIndex(this.OBJECT_STORES.HABITS, 'goalId', goal.id);
+                    
+                    let progress = 0;
+                    let totalTasks = habitsForGoal.length; // Simplistic: progress based on number of habits linked
+                                                        // More complex: could be based on habit completion rates or manual goal progress %
+
+                    if (totalTasks > 0) {
+                        // This is a placeholder for more complex progress calculation.
+                        // For now, let's assume if there are habits, it's 0% until manually marked or habits are tracked.
+                        // A better approach would be to allow users to set a % completion for goals or calculate based on habit logs.
+                        // For simplicity, we'll just show the goal and its linked habits.
+                        // A true progress bar here would require quantifiable goals or complex habit aggregation.
+                    }
+                    // If goal.isAchieved is true, it's 100%. We are filtering these out.
+                    // If goal has a numeric target and current value, that could be used.
+                    // For now, just list goals. A visual progress bar for non-quantifiable goals is tricky.
+                    // Let's make a simple "completion" based on `isAchieved` flag.
+                    // Since we filter for !isAchieved, progress will be 0 unless we have another metric.
+                    // Let's use a placeholder progress for demonstration.
+                    // For a real app, this part needs more thought on how progress is measured.
+
+                    const goalCard = document.createElement('div');
+                    goalCard.className = 'card';
+                    goalCard.innerHTML = `
+                        <h4>${this.escapeHtml(goal.title)} <small>(${area ? this.escapeHtml(area.name) : 'N/A'})</small></h4>
+                        ${goal.description ? `<p style="font-size:0.9em; color:var(--text-secondary-color);">${this.escapeHtml(goal.description)}</p>` : ''}
+                        ${goal.targetDate ? `<p><small>Target: ${new Date(goal.targetDate).toLocaleDateString()}</small></p>` : ''}
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${goal.isAchieved ? 100 : 0}%;">${goal.isAchieved ? 100 : 0}%</div>
+                        </div>
+                        <small>Mark goal as achieved in the 'Areas of Focus' section to update progress to 100%.</small>
+                    `;
+                    container.appendChild(goalCard);
+                }
+                 if (container.innerHTML === '') { // If all goals were achieved
+                    container.innerHTML = '<p class="empty-state" style="padding:1rem;">All defined goals are marked as achieved! Add new goals to continue your path.</p>';
+                }
+            },
+
+            // --- Settings: Backup & Restore ---
+            backupData: async function() {
+                try {
+                    const backup = {};
+                    for (const storeName of Object.values(this.OBJECT_STORES)) {
+                        backup[storeName] = await this.getAllItems(storeName);
+                    }
+                    const json = JSON.stringify(backup, null, 2);
+                    const blob = new Blob([json], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `PureHeartPath_Backup_${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    alert("Data backup successful!");
+                } catch (error) {
+                    console.error("Backup failed:", error);
+                    alert("Backup failed: " + error.message);
+                }
+            },
+
+            restoreData: async function() {
+                const fileInput = document.getElementById('restoreFile');
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    alert("Please select a backup file to restore.");
+                    return;
+                }
+                const file = fileInput.files[0];
+                if (!confirm("WARNING: Restoring data will overwrite all current data in the app. Are you sure you want to proceed?")) {
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    try {
+                        const backupData = JSON.parse(event.target.result);
+                        
+                        // Clear existing data
+                        for (const storeName of Object.values(this.OBJECT_STORES)) {
+                            if (this.db.objectStoreNames.contains(storeName)) {
+                                await this.clearStore(storeName);
+                            }
+                        }
+
+                        // Import new data - order might matter if there were foreign key constraints (not enforced by IndexedDB by default)
+                        // For this app, order of restore shouldn't be critical as IDs are preserved.
+                        for (const storeName of Object.values(this.OBJECT_STORES)) {
+                            if (backupData[storeName] && this.db.objectStoreNames.contains(storeName)) {
+                                const items = backupData[storeName];
+                                const tx = this.db.transaction(storeName, 'readwrite');
+                                const store = tx.objectStore(storeName);
+                                for (const item of items) {
+                                    // Important: If keyPath is defined and item has the key, `put` will use it.
+                                    // This is crucial for preserving IDs and relationships.
+                                    store.put(item); 
+                                }
+                                await new Promise((resolve, reject) => { // Wait for transaction to complete
+                                    tx.oncomplete = resolve;
+                                    tx.onerror = reject;
+                                });
+                            }
+                        }
+                        alert("Data restored successfully! The app will now reload.");
+                        // location.reload(); // Reload to reflect changes and re-initialize with new data
+                        this.renderApp(); // Re-render all views
+                    } catch (error) {
+                        console.error("Restore failed:", error);
+                        alert("Restore failed: Invalid file format or error during database operation. " + error.message);
+                    } finally {
+                        fileInput.value = ''; // Clear file input
+                    }
+                };
+                reader.readAsText(file);
+            },
+
+            // Utility
+            escapeHtml: function(unsafe) {
+                if (unsafe === null || typeof unsafe === 'undefined') return '';
+                return unsafe
+                    .toString()
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            App.init();
+        });
+
+    </script>
+</body>
+</html>
